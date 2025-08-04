@@ -1,11 +1,16 @@
 export class CourseResponseDto {
   id: number;
-  title: string;
-  description: string | null;
+  titleAr: string;
+  titleEn: string;
+  descriptionAr: string | null;
+  descriptionEn: string | null;
   startDate: string | null;
   price: number | null;
-  countryId: number | null;
-  cityId: number | null;
+  category: {
+    id: number;
+    nameAr: string;
+    nameEn: string;
+  };
   country: {
     id: number;
     name: string;

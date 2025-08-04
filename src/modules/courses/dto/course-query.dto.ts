@@ -1,33 +1,21 @@
-import { IsOptional, IsString, IsNumber, Min } from 'class-validator';
+import { IsOptional, IsString, IsNumber, Min, IsArray } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
+import { PaginationDto } from 'src/modules/common/dto/pagination.dto';
 
-export class CourseQueryDto {
+export class CourseQueryDto extends PaginationDto {
   @IsOptional()
   @IsString()
   @Transform(({ value }) => value?.trim())
   search?: string;
 
   @IsOptional()
+  @IsArray()
   @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  priceFrom?: number;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  priceTo?: number;
+  categoryIds?: number[];
 
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)
   cityId?: number;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(1)
-  countryId?: number;
 }

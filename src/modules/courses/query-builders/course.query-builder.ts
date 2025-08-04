@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { and, or, gte, lte, ilike, eq } from 'drizzle-orm';
+import { and, or, ilike, eq, inArray } from 'drizzle-orm';
 import { DrizzleService } from 'src/modules/drizzle/drizzle.service';
-import { courses, countries, cities } from 'src/modules/drizzle/schemas/schema';
+import {
+  courses,
+  countries,
+  cities,
+  courseCategories,
+} from 'src/modules/drizzle/schemas/schema';
 
 export interface CourseFilters {
   search?: string;
-  priceFrom?: number;
-  priceTo?: number;
   cityId?: number;
+  categoryIds?: number[];
 }
 
 @Injectable()
@@ -18,12 +22,17 @@ export class CourseQueryBuilder {
     return this.drizzleService.db
       .select({
         id: courses.id,
-        title: courses.title,
-        description: courses.description,
+        titleEn: courses.titleEn,
+        titleAr: courses.titleAr,
+        descriptionEn: courses.descriptionEn,
+        descriptionAr: courses.descriptionAr,
         startDate: courses.startDate,
         price: courses.price,
-        countryId: courses.countryId,
-        cityId: courses.cityId,
+        category: {
+          id: courseCategories.id,
+          nameAr: courseCategories.nameAr,
+          nameEn: courseCategories.nameEn,
+        },
         country: {
           id: countries.id,
           nameAr: countries.nameAr,
@@ -37,51 +46,54 @@ export class CourseQueryBuilder {
       })
       .from(courses)
       .leftJoin(countries, eq(courses.countryId, countries.id))
-      .leftJoin(cities, eq(courses.cityId, cities.id));
+      .leftJoin(cities, eq(courses.cityId, cities.id))
+      .leftJoin(courseCategories, eq(courses.categoryId, courseCategories.id));
   }
 
-  withSearch(query: any, search?: string) {
-    if (!search) return query;
+  buildWhereClause(filters: CourseFilters) {
+    const conditions: Array<
+      | ReturnType<typeof eq>
+      | ReturnType<typeof or>
+      | ReturnType<typeof ilike>
+      | ReturnType<typeof inArray>
+    > = [];
 
-    return query.where(
-      or(
-        ilike(courses.title, `%${search}%`),
-        ilike(courses.description, `%${search}%`),
-      ),
-    );
-  }
-
-  withPriceRange(query: any, priceFrom?: number, priceTo?: number) {
-    const conditions: any[] = [];
-
-    if (priceFrom !== undefined) {
-      conditions.push(gte(courses.price, priceFrom));
+    if (filters.search) {
+      conditions.push(
+        or(
+          ilike(courses.titleEn, `%${filters.search}%`),
+          ilike(courses.descriptionEn, `%${filters.search}%`),
+        ),
+      );
     }
 
-    if (priceTo !== undefined) {
-      conditions.push(lte(courses.price, priceTo));
+    if (filters.cityId) {
+      conditions.push(eq(courses.cityId, filters.cityId));
     }
 
-    return conditions.length > 0 ? query.where(and(...conditions)) : query;
+    if (filters.categoryIds?.length) {
+      conditions.push(inArray(courses.categoryId, filters.categoryIds));
+    }
+
+    return conditions.length > 0 ? and(...conditions) : undefined;
   }
 
-  withCityId(query: any, cityId?: number) {
-    if (!cityId) return query;
-    return query.where(eq(courses.cityId, cityId));
-  }
+  findWithFilters(
+    filters: CourseFilters = {},
+    pagination?: { page?: number; perPage?: number },
+  ) {
+    const whereClause = this.buildWhereClause(filters);
 
-  withCountryId(query: any, countryId?: number) {
-    if (!countryId) return query;
-    return query.where(eq(courses.countryId, countryId));
-  }
+    const page = pagination?.page || 1;
+    const perPage = pagination?.perPage || 10;
+    const offset = (page - 1) * perPage;
 
-  findWithFilters(filters: CourseFilters = {}) {
-    let query = this.baseQuery;
+    const query = this.baseQuery;
 
-    query = this.withSearch(query, filters.search);
-    query = this.withPriceRange(query, filters.priceFrom, filters.priceTo);
-    query = this.withCityId(query, filters.cityId);
+    if (whereClause) {
+      query.where(whereClause);
+    }
 
-    return query;
+    return query.limit(perPage).offset(offset);
   }
 }

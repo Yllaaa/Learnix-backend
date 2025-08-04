@@ -12,7 +12,14 @@ export class DrizzleService implements OnApplicationBootstrap {
       connectionString: process.env.DATABASE_URL,
     });
     const client = await pool.connect();
-    const db = drizzle(client, { schema });
+    const db = drizzle(client, {
+      schema,
+      logger: {
+        logQuery: (query, params) => {
+          console.log('[Drizzle SQL]', query, params);
+        },
+      },
+    });
     this.db = db;
   }
 }

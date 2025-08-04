@@ -11,6 +11,7 @@ export class CoursesController {
   async searchCourses(
     @Query() query: CourseQueryDto,
   ): Promise<CourseResponseDto[]> {
-    return this.coursesService.findAll(query);
+    const { page, perPage, ...filters } = query;
+    return this.coursesService.findAll(filters, { page, perPage });
   }
 }

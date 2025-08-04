@@ -6,8 +6,11 @@ import { CourseFilters } from './query-builders/course.query-builder';
 export class CoursesService {
   constructor(private readonly coursesRepository: CoursesRepository) {}
 
-  async findAll(filters: CourseFilters = {}): Promise<CourseResponseDto[]> {
-    const query = this.coursesRepository.findAll(filters);
+  async findAll(
+    filters: CourseFilters = {},
+    pagination?: { page?: number; perPage?: number },
+  ): Promise<CourseResponseDto[]> {
+    const query = this.coursesRepository.findAll(filters, pagination);
     return await query;
   }
 }
