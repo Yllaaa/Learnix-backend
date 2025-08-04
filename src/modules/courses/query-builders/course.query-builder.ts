@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { and, or, ilike, eq, inArray } from 'drizzle-orm';
+import { and, or, ilike, eq, inArray, count } from 'drizzle-orm';
 import { DrizzleService } from 'src/modules/drizzle/drizzle.service';
 import {
   courses,
@@ -62,7 +62,9 @@ export class CourseQueryBuilder {
       conditions.push(
         or(
           ilike(courses.titleEn, `%${filters.search}%`),
+          ilike(courses.titleAr, `%${filters.search}%`),
           ilike(courses.descriptionEn, `%${filters.search}%`),
+          ilike(courses.descriptionAr, `%${filters.search}%`),
         ),
       );
     }
@@ -78,22 +80,37 @@ export class CourseQueryBuilder {
     return conditions.length > 0 ? and(...conditions) : undefined;
   }
 
-  findWithFilters(
+  async findWithFilters(
     filters: CourseFilters = {},
     pagination?: { page?: number; perPage?: number },
   ) {
     const whereClause = this.buildWhereClause(filters);
 
     const page = pagination?.page || 1;
-    const perPage = pagination?.perPage || 10;
+    const perPage = Math.min(pagination?.perPage || 10, 100);
     const offset = (page - 1) * perPage;
 
-    const query = this.baseQuery;
+    const query = this.baseQuery
+      .where(whereClause)
+      .limit(perPage)
+      .offset(offset);
 
-    if (whereClause) {
-      query.where(whereClause);
-    }
+    return await query;
+  }
 
-    return query.limit(perPage).offset(offset);
+  async count(filters: CourseFilters = {}): Promise<number> {
+    const whereClause = this.buildWhereClause(filters);
+
+    const countQuery = this.drizzleService.db
+      .select({ count: count() })
+      .from(courses)
+      .leftJoin(countries, eq(courses.countryId, countries.id))
+      .leftJoin(cities, eq(courses.cityId, cities.id))
+      .leftJoin(courseCategories, eq(courses.categoryId, courseCategories.id))
+      .where(whereClause);
+
+    const result = await countQuery;
+
+    return result[0]?.count || 0;
   }
 }

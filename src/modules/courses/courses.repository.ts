@@ -3,7 +3,6 @@ import {
   CourseQueryBuilder,
   CourseFilters,
 } from './query-builders/course.query-builder';
-import { CourseResponseDto } from './dto/course-response.dto';
 
 @Injectable()
 export class CoursesRepository {
@@ -12,11 +11,12 @@ export class CoursesRepository {
   async findAll(
     filters: CourseFilters = {},
     pagination?: { page?: number; perPage?: number },
-  ): Promise<CourseResponseDto[]> {
-    const query = await this.courseQueryBuilder.findWithFilters(
-      filters,
-      pagination,
-    );
-    return query as CourseResponseDto[];
+  ): Promise<{ data: any[]; total: number }> {
+    const [data, total] = await Promise.all([
+      this.courseQueryBuilder.findWithFilters(filters, pagination),
+      this.courseQueryBuilder.count(filters),
+    ]);
+
+    return { data, total };
   }
 }
