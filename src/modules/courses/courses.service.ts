@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CoursesRepository } from './courses.repository';
 import {
-  LocalizedCourseResponseDto,
-  LocalizedCourseDetailResponseDto,
+  CourseResponseDto,
+  CourseOverviewResponseDto,
 } from './dto/course-response.dto';
 import { CourseFilters } from './query-builders/course.query-builder';
-import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { ApiResponse } from '../common/interfaces/paginated-response.interface';
 import { Language } from '../common/enums/language.enum';
 import { LocalizationService } from '../common/services/localization.service';
 
@@ -20,7 +20,7 @@ export class CoursesService {
     filters: CourseFilters = {},
     pagination: { page?: number; perPage?: number } = {},
     locale: string = 'en',
-  ): Promise<PaginatedResponse<LocalizedCourseResponseDto>> {
+  ): Promise<ApiResponse<CourseResponseDto>> {
     const page = pagination.page || 1;
     const perPage = Math.min(pagination.perPage || 10, 100);
 
@@ -52,14 +52,14 @@ export class CoursesService {
   async findOne(
     id: number,
     locale: string = 'en',
-  ): Promise<LocalizedCourseDetailResponseDto> {
+  ): Promise<CourseOverviewResponseDto> {
     const course = await this.coursesRepository.findById(id);
 
     if (!course) {
       throw new NotFoundException(`Course with ID ${id} not found`);
     }
 
-    return this.localizeCourseDetail(course, locale);
+    return this.localizeCourseOverview(course, locale);
   }
 
   async getCourseCategories(
@@ -72,10 +72,7 @@ export class CoursesService {
     }));
   }
 
-  private localizeCourse(
-    course: any,
-    locale: string,
-  ): LocalizedCourseResponseDto {
+  private localizeCourse(course: any, locale: string): CourseResponseDto {
     return {
       id: course.id,
       title: this.localizationService.getLocalizedTitle(course, locale),
@@ -118,10 +115,10 @@ export class CoursesService {
     };
   }
 
-  private localizeCourseDetail(
+  private localizeCourseOverview(
     course: any,
     locale: string,
-  ): LocalizedCourseDetailResponseDto {
+  ): CourseOverviewResponseDto {
     return {
       id: course.id,
       title: this.localizationService.getLocalizedTitle(course, locale),
@@ -162,6 +159,24 @@ export class CoursesService {
             locale,
           ),
         })) || [],
+      city: course.city
+        ? {
+            id: course.city.id,
+            name: this.localizationService.getLocalizedName(
+              course.city,
+              locale,
+            ),
+            country: course.city.country
+              ? {
+                  id: course.city.country.id,
+                  name: this.localizationService.getLocalizedName(
+                    course.city.country,
+                    locale,
+                  ),
+                }
+              : null,
+          }
+        : null,
     };
   }
 }

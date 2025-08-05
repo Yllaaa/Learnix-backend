@@ -45,8 +45,8 @@ export class CourseQueryBuilder {
         },
       })
       .from(courses)
-      .leftJoin(countries, eq(courses.countryId, countries.id))
       .leftJoin(cities, eq(courses.cityId, cities.id))
+      .leftJoin(countries, eq(cities.countryId, countries.id))
       .leftJoin(courseCategories, eq(courses.categoryId, courseCategories.id));
   }
 
@@ -104,8 +104,8 @@ export class CourseQueryBuilder {
     const countQuery = this.drizzleService.db
       .select({ count: count() })
       .from(courses)
-      .leftJoin(countries, eq(courses.countryId, countries.id))
       .leftJoin(cities, eq(courses.cityId, cities.id))
+      .leftJoin(countries, eq(cities.countryId, countries.id))
       .leftJoin(courseCategories, eq(courses.categoryId, courseCategories.id))
       .where(whereClause);
 

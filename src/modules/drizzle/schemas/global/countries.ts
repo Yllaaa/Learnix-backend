@@ -7,6 +7,7 @@ export const countries = pgTable('countries', {
   id: serial('id').primaryKey(),
   nameAr: text('name_ar').notNull(),
   nameEn: text('name_en').notNull(),
+  iso: text('iso').notNull(),
   ...timestamps,
 });
 

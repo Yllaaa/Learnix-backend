@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TrainersRepository } from './trainers.repository';
-import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { ApiResponse } from '../common/interfaces/paginated-response.interface';
 import { Language } from '../common/enums/language.enum';
 import { TrainerResponseDto } from './dto/trainer-response.dto';
 import { LocalizationService } from '../common/services/localization.service';
@@ -15,7 +15,7 @@ export class TrainersService {
   async findAll(
     pagination: { page?: number; perPage?: number } = {},
     locale: string = 'en',
-  ): Promise<PaginatedResponse<TrainerResponseDto>> {
+  ): Promise<ApiResponse<TrainerResponseDto>> {
     const page = pagination.page || 1;
     const perPage = Math.min(pagination.perPage || 10, 100);
 

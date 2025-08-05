@@ -15,17 +15,12 @@ export const courses = pgTable('courses', {
   descriptionAr: text('description_ar'),
   startDate: date('start_date'),
   price: integer('price'),
-  countryId: serial('country_id').references(() => countries.id),
   cityId: serial('city_id').references(() => cities.id),
   categoryId: serial('category_id').references(() => courseCategories.id),
   ...timestamps,
 });
 
 export const coursesRelations = relations(courses, ({ one, many }) => ({
-  country: one(countries, {
-    fields: [courses.countryId],
-    references: [countries.id],
-  }),
   city: one(cities, {
     fields: [courses.cityId],
     references: [cities.id],

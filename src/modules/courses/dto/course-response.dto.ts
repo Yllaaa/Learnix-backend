@@ -1,4 +1,4 @@
-export class LocalizedCourseResponseDto {
+export class CourseResponseDto {
   id: number;
   title: string;
   description: string | null;
@@ -18,7 +18,7 @@ export class LocalizedCourseResponseDto {
   } | null;
 }
 
-export interface LocalizedCourseDetailResponseDto {
+export interface CourseOverviewResponseDto {
   id: number;
   title: string;
   description: string;
@@ -39,4 +39,12 @@ export interface LocalizedCourseDetailResponseDto {
     name: string;
     description: string;
   }>;
+  city?: {
+    id: number;
+    name: string;
+    country?: {
+      id: number;
+      name: string;
+    } | null;
+  } | null;
 }

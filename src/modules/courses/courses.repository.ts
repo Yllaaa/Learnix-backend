@@ -41,6 +41,22 @@ export class CoursesRepository {
             },
           },
         },
+        city: {
+          columns: {
+            id: true,
+            nameEn: true,
+            nameAr: true,
+          },
+          with: {
+            country: {
+              columns: {
+                id: true,
+                nameEn: true,
+                nameAr: true,
+              },
+            },
+          },
+        },
         category: {
           columns: {
             id: true,
