@@ -8,6 +8,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LocaleInterceptor } from './modules/common/interceptors/language.interceptor';
 import { TrainersModule } from './modules/trainers/trainers.module';
 import { CommonModule } from './modules/common/common.module';
+import { LeadWeekendModule } from './modules/lead-weekend/lead-weekend.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CommonModule } from './modules/common/common.module';
       isGlobal: true,
     }),
     TrainersModule,
+    LeadWeekendModule,
   ],
   controllers: [AppController],
   providers: [

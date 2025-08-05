@@ -6,7 +6,7 @@ import {
 } from './dto/course-response.dto';
 import { CoursesService } from './courses.service';
 import { lang } from '../common/decorators/lang.decorator';
-import { ApiResponse } from '../common/interfaces/paginated-response.interface';
+import { ApiPaginatedResponse } from '../common/interfaces/api-paginated-response.interface';
 
 @Controller('courses')
 export class CoursesController {
@@ -16,7 +16,7 @@ export class CoursesController {
   async searchCourses(
     @Query() query: CourseQueryDto,
     @lang() lang: string,
-  ): Promise<ApiResponse<CourseResponseDto>> {
+  ): Promise<ApiPaginatedResponse<CourseResponseDto>> {
     const { page, perPage, ...filters } = query;
     return this.coursesService.findAll(filters, { page, perPage }, lang);
   }

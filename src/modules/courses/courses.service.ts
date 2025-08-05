@@ -5,7 +5,7 @@ import {
   CourseOverviewResponseDto,
 } from './dto/course-response.dto';
 import { CourseFilters } from './query-builders/course.query-builder';
-import { ApiResponse } from '../common/interfaces/paginated-response.interface';
+import { ApiPaginatedResponse } from '../common/interfaces/api-paginated-response.interface';
 import { Language } from '../common/enums/language.enum';
 import { LocalizationService } from '../common/services/localization.service';
 
@@ -20,7 +20,7 @@ export class CoursesService {
     filters: CourseFilters = {},
     pagination: { page?: number; perPage?: number } = {},
     locale: string = 'en',
-  ): Promise<ApiResponse<CourseResponseDto>> {
+  ): Promise<ApiPaginatedResponse<CourseResponseDto>> {
     const page = pagination.page || 1;
     const perPage = Math.min(pagination.perPage || 10, 100);
 

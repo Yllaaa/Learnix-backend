@@ -29,6 +29,13 @@
       "when": 1754417345709,
       "tag": "0003_smooth_ultimatum",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1754430487514,
+      "tag": "0004_special_iron_fist",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { Language } from '../enums/language.enum';
 
-export interface ApiResponse<T> {
+export interface ApiPaginatedResponse<T> {
   data: T[];
   meta: {
     page: number;

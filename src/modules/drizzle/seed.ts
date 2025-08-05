@@ -29,9 +29,9 @@ async function seed() {
   const insertedCountries = await drizzle.db
     .insert(countries)
     .values([
-      { nameEn: 'Egypt', nameAr: 'مصر' },
-      { nameEn: 'Germany', nameAr: 'ألمانيا' },
-      { nameEn: 'Japan', nameAr: 'اليابان' },
+      { nameEn: 'Egypt', nameAr: 'مصر', iso: 'EG' },
+      { nameEn: 'Germany', nameAr: 'ألمانيا', iso: 'DE' },
+      { nameEn: 'Japan', nameAr: 'اليابان', iso: 'JP' },
     ])
     .returning();
 
@@ -472,7 +472,6 @@ async function seed() {
         descriptionAr: `وصف ${category.nameAr} باللغة العربية.`,
         startDate: startDate.toISOString().split('T')[0],
         price,
-        countryId: country.id,
         cityId: city.id,
         categoryId: category.id,
         trainers: categoryTrainers,
