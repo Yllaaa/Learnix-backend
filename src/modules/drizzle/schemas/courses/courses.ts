@@ -4,6 +4,7 @@ import { timestamps } from '../columns.helpers';
 import { cities } from '../global/cities';
 import { countries } from '../global/countries';
 import { courseCategories } from './categories';
+import { trainers } from '../trainers/trainers';
 
 export const courses = pgTable('courses', {
   id: serial('id').primaryKey(),
@@ -31,5 +32,24 @@ export const coursesRelations = relations(courses, ({ one, many }) => ({
   category: one(courseCategories, {
     fields: [courses.categoryId],
     references: [courseCategories.id],
+  }),
+  trainers: many(courseTrainers),
+}));
+
+export const courseTrainers = pgTable('course_trainers', {
+  id: serial('id').primaryKey(),
+  courseId: serial('course_id').references(() => courses.id),
+  trainerId: serial('trainer_id').references(() => trainers.id),
+  ...timestamps,
+});
+
+export const courseTrainersRelations = relations(courseTrainers, ({ one }) => ({
+  course: one(courses, {
+    fields: [courseTrainers.courseId],
+    references: [courses.id],
+  }),
+  trainer: one(trainers, {
+    fields: [courseTrainers.trainerId],
+    references: [trainers.id],
   }),
 }));

@@ -1,0 +1,51 @@
+import { Injectable } from '@nestjs/common';
+import { TrainersRepository } from './trainers.repository';
+import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { Language } from '../common/enums/language.enum';
+import { TrainerResponseDto } from './dto/trainer-response.dto';
+
+@Injectable()
+export class TrainersService {
+  constructor(private readonly trainersRepository: TrainersRepository) {}
+
+  async findAll(
+    pagination: { page?: number; perPage?: number } = {},
+    locale: string = 'en',
+  ): Promise<PaginatedResponse<TrainerResponseDto>> {
+    const page = pagination.page || 1;
+    const perPage = Math.min(pagination.perPage || 10, 100);
+
+    const { data, total } = await this.trainersRepository.findAll({
+      page,
+      perPage,
+    });
+
+    const localizedData = data.map((trainer) =>
+      this.localizeTrainer(trainer, locale),
+    );
+
+    const totalPages = Math.ceil(total / perPage);
+
+    return {
+      data: localizedData,
+      meta: {
+        page,
+        perPage,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+      lang: locale as Language,
+    };
+  }
+
+  private localizeTrainer(trainer: any, locale: string): TrainerResponseDto {
+    return {
+      id: trainer.id,
+      name: locale === 'ar' ? trainer.nameAr : trainer.nameEn,
+      title: locale === 'ar' ? trainer.titleAr : trainer.titleEn,
+      linkedIn: trainer.linkedIn,
+    };
+  }
+}
