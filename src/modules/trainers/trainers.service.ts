@@ -3,10 +3,14 @@ import { TrainersRepository } from './trainers.repository';
 import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
 import { Language } from '../common/enums/language.enum';
 import { TrainerResponseDto } from './dto/trainer-response.dto';
+import { LocalizationService } from '../common/services/localization.service';
 
 @Injectable()
 export class TrainersService {
-  constructor(private readonly trainersRepository: TrainersRepository) {}
+  constructor(
+    private readonly trainersRepository: TrainersRepository,
+    private readonly localizationService: LocalizationService,
+  ) {}
 
   async findAll(
     pagination: { page?: number; perPage?: number } = {},
@@ -43,8 +47,8 @@ export class TrainersService {
   private localizeTrainer(trainer: any, locale: string): TrainerResponseDto {
     return {
       id: trainer.id,
-      name: locale === 'ar' ? trainer.nameAr : trainer.nameEn,
-      title: locale === 'ar' ? trainer.titleAr : trainer.titleEn,
+      name: this.localizationService.getLocalizedName(trainer, locale),
+      title: this.localizationService.getLocalizedTitle(trainer, locale),
       linkedIn: trainer.linkedIn,
     };
   }

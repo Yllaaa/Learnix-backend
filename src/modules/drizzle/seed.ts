@@ -6,6 +6,7 @@ import {
   courseCategories,
   courseTrainers,
   trainers,
+  curriculums,
 } from './schemas/schema';
 import { AppModule } from '../../app.module';
 import { DrizzleService } from './drizzle.service';
@@ -15,7 +16,8 @@ async function seed() {
   const drizzle = app.get(DrizzleService);
 
   console.log('🗑️ Deleting existing data...');
-  await drizzle.db.delete(courseTrainers).execute(); // Delete join table first
+  await drizzle.db.delete(courseTrainers).execute();
+  await drizzle.db.delete(curriculums).execute(); // Delete curriculums before courses
   await drizzle.db.delete(courses).execute();
   await drizzle.db.delete(trainers).execute();
   await drizzle.db.delete(cities).execute();
@@ -229,6 +231,220 @@ async function seed() {
     ].filter(Boolean),
   };
 
+  const curriculumsByCourse = {
+    'React.js Bootcamp': [
+      {
+        nameEn: 'React Fundamentals',
+        nameAr: 'أساسيات رياكت',
+        descriptionEn: 'Learn React components, state, and props.',
+        descriptionAr: 'تعلم مكونات رياكت والحالة والخصائص.',
+      },
+      {
+        nameEn: 'Advanced React Patterns',
+        nameAr: 'أنماط رياكت المتقدمة',
+        descriptionEn: 'Explore hooks, context, and performance optimization.',
+        descriptionAr: 'استكشف الهوكس والسياق وتحسين الأداء.',
+      },
+    ],
+    'Mastering HTML & CSS': [
+      {
+        nameEn: 'HTML Essentials',
+        nameAr: 'أساسيات HTML',
+        descriptionEn: 'Understand semantic HTML and document structure.',
+        descriptionAr: 'فهم HTML الدلالي وبنية الوثيقة.',
+      },
+      {
+        nameEn: 'CSS Mastery',
+        nameAr: 'إتقان CSS',
+        descriptionEn: 'Master layouts, flexbox, and responsive design.',
+        descriptionAr: 'إتقان التخطيطات، فليكسبوكس، والتصميم المتجاوب.',
+      },
+    ],
+    'Fullstack with NestJS': [
+      {
+        nameEn: 'Backend with NestJS',
+        nameAr: 'الخلفية مع NestJS',
+        descriptionEn: 'Build RESTful APIs with NestJS and TypeScript.',
+        descriptionAr: 'بناء واجهات برمجية مع NestJS وتايب سكريبت.',
+      },
+      {
+        nameEn: 'Frontend Integration',
+        nameAr: 'تكامل الواجهة الأمامية',
+        descriptionEn: 'Connect frontend with backend services.',
+        descriptionAr: 'ربط الواجهة الأمامية بالخدمات الخلفية.',
+      },
+    ],
+    'Intro to Python & Pandas': [
+      {
+        nameEn: 'Python Basics',
+        nameAr: 'أساسيات بايثون',
+        descriptionEn: 'Learn Python syntax and data structures.',
+        descriptionAr: 'تعلم بنية بايثون وهياكل البيانات.',
+      },
+      {
+        nameEn: 'Pandas for Data Analysis',
+        nameAr: 'بانداس لتحليل البيانات',
+        descriptionEn: 'Manipulate and analyze data with Pandas.',
+        descriptionAr: 'معالجة وتحليل البيانات باستخدام بانداس.',
+      },
+    ],
+    'Machine Learning Basics': [
+      {
+        nameEn: 'Supervised Learning',
+        nameAr: 'التعلم الموجّه',
+        descriptionEn: 'Understand regression and classification algorithms.',
+        descriptionAr: 'فهم خوارزميات الانحدار والتصنيف.',
+      },
+      {
+        nameEn: 'Model Evaluation',
+        nameAr: 'تقييم النماذج',
+        descriptionEn: 'Learn metrics and techniques for model performance.',
+        descriptionAr: 'تعلم المقاييس وتقنيات أداء النماذج.',
+      },
+    ],
+    'Deep Learning with TensorFlow': [
+      {
+        nameEn: 'Neural Networks',
+        nameAr: 'الشبكات العصبية',
+        descriptionEn: 'Build and train neural networks with TensorFlow.',
+        descriptionAr: 'بناء وتدريب الشبكات العصبية باستخدام TensorFlow.',
+      },
+      {
+        nameEn: 'Deep Learning Applications',
+        nameAr: 'تطبيقات التعلم العميق',
+        descriptionEn: 'Explore CNNs and RNNs for real-world problems.',
+        descriptionAr:
+          'استكشف الشبكات الالتفافية والتكرارية لمشاكل العالم الحقيقي.',
+      },
+    ],
+    'SEO Fundamentals': [
+      {
+        nameEn: 'On-Page SEO',
+        nameAr: 'تحسين محركات البحث على الصفحة',
+        descriptionEn: 'Optimize content and metadata for search engines.',
+        descriptionAr: 'تحسين المحتوى والبيانات الوصفية لمحركات البحث.',
+      },
+      {
+        nameEn: 'Link Building',
+        nameAr: 'بناء الروابط',
+        descriptionEn: 'Strategies for acquiring quality backlinks.',
+        descriptionAr: 'استراتيجيات للحصول على روابط خلفية عالية الجودة.',
+      },
+    ],
+    'Google Ads Mastery': [
+      {
+        nameEn: 'Campaign Setup',
+        nameAr: 'إعداد الحملات',
+        descriptionEn: 'Create and optimize Google Ads campaigns.',
+        descriptionAr: 'إنشاء وتحسين حملات جوجل الإعلانية.',
+      },
+      {
+        nameEn: 'Ad Optimization',
+        nameAr: 'تحسين الإعلانات',
+        descriptionEn: 'Improve ad performance with targeting and analytics.',
+        descriptionAr: 'تحسين أداء الإعلانات باستخدام الاستهداف والتحليلات.',
+      },
+    ],
+    'Social Media Marketing': [
+      {
+        nameEn: 'Content Strategy',
+        nameAr: 'استراتيجية المحتوى',
+        descriptionEn: 'Develop engaging content for social platforms.',
+        descriptionAr: 'تطوير محتوى جذاب لمنصات التواصل الاجتماعي.',
+      },
+      {
+        nameEn: 'Analytics & Growth',
+        nameAr: 'التحليلات والنمو',
+        descriptionEn: 'Measure and boost social media performance.',
+        descriptionAr: 'قياس وتعزيز أداء وسائل التواصل الاجتماعي.',
+      },
+    ],
+    'Photoshop for Beginners': [
+      {
+        nameEn: 'Photoshop Basics',
+        nameAr: 'أساسيات فوتوشوب',
+        descriptionEn: 'Learn Photoshop tools and interface.',
+        descriptionAr: 'تعلم أدوات فوتوشوب وواجهة المستخدم.',
+      },
+      {
+        nameEn: 'Image Editing',
+        nameAr: 'تحرير الصور',
+        descriptionEn: 'Master photo editing and manipulation techniques.',
+        descriptionAr: 'إتقان تقنيات تحرير ومعالجة الصور.',
+      },
+    ],
+    'UI/UX Design': [
+      {
+        nameEn: 'User Research',
+        nameAr: 'بحث المستخدم',
+        descriptionEn: 'Conduct user research and create personas.',
+        descriptionAr: 'إجراء بحث المستخدم وإنشاء شخصيات.',
+      },
+      {
+        nameEn: 'Prototyping',
+        nameAr: 'النمذجة',
+        descriptionEn: 'Design wireframes and interactive prototypes.',
+        descriptionAr: 'تصميم إطارات سلكية ونماذج تفاعلية.',
+      },
+    ],
+    'Logo Design Workshop': [
+      {
+        nameEn: 'Branding Principles',
+        nameAr: 'مبادئ العلامة التجارية',
+        descriptionEn: 'Understand branding and logo design concepts.',
+        descriptionAr: 'فهم مفاهيم العلامة التجارية وتصميم الشعار.',
+      },
+      {
+        nameEn: 'Logo Creation',
+        nameAr: 'إنشاء الشعار',
+        descriptionEn: 'Create professional logos with design tools.',
+        descriptionAr: 'إنشاء شعارات احترافية باستخدام أدوات التصميم.',
+      },
+    ],
+    'Network Security Essentials': [
+      {
+        nameEn: 'Network Fundamentals',
+        nameAr: 'أساسيات الشبكات',
+        descriptionEn: 'Learn network protocols and security basics.',
+        descriptionAr: 'تعلم بروتوكولات الشبكة وأساسيات الأمان.',
+      },
+      {
+        nameEn: 'Threat Mitigation',
+        nameAr: 'تخفيف التهديدات',
+        descriptionEn: 'Implement strategies to secure networks.',
+        descriptionAr: 'تنفيذ استراتيجيات لتأمين الشبكات.',
+      },
+    ],
+    'Ethical Hacking 101': [
+      {
+        nameEn: 'Hacking Basics',
+        nameAr: 'أساسيات القرصنة الأخلاقية',
+        descriptionEn: 'Understand ethical hacking techniques and tools.',
+        descriptionAr: 'فهم تقنيات وأدوات القرصنة الأخلاقية.',
+      },
+      {
+        nameEn: 'Vulnerability Assessment',
+        nameAr: 'تقييم الثغرات',
+        descriptionEn: 'Identify and assess system vulnerabilities.',
+        descriptionAr: 'تحديد وتقييم ثغرات النظام.',
+      },
+    ],
+    'Penetration Testing': [
+      {
+        nameEn: 'Penetration Testing Tools',
+        nameAr: 'أدوات اختبار الاختراق',
+        descriptionEn: 'Use tools like Metasploit for penetration testing.',
+        descriptionAr: 'استخدام أدوات مثل Metasploit لاختبار الاختراق.',
+      },
+      {
+        nameEn: 'Reporting & Ethics',
+        nameAr: 'التقارير والأخلاقيات',
+        descriptionEn: 'Learn reporting and ethical considerations.',
+        descriptionAr: 'تعلم التقارير والاعتبارات الأخلاقية.',
+      },
+    ],
+  };
+
   const courseData = insertedCategories.flatMap((category) => {
     const titles =
       coursesByCategory[category.nameEn as keyof typeof coursesByCategory];
@@ -259,18 +475,16 @@ async function seed() {
         countryId: country.id,
         cityId: city.id,
         categoryId: category.id,
-        trainers: categoryTrainers, // Save for next step
+        trainers: categoryTrainers,
       };
     });
   });
 
-  // Insert courses and map trainers separately
   const insertedCourses = await drizzle.db
     .insert(courses)
     .values(courseData.map(({ trainers, ...course }) => course))
     .returning();
 
-  // Link trainers to courses
   const courseTrainerRecords = insertedCourses.flatMap((course, index) => {
     const trainers = courseData[index].trainers;
     return trainers.map((trainer) => ({
@@ -281,11 +495,25 @@ async function seed() {
 
   await drizzle.db.insert(courseTrainers).values(courseTrainerRecords);
 
+  const curriculumRecords = insertedCourses.flatMap((course, index) => {
+    const courseTitle = courseData[index].titleEn;
+    const curriculumsForCourse =
+      curriculumsByCourse[courseTitle as keyof typeof curriculumsByCourse] ||
+      [];
+    return curriculumsForCourse.map((curriculum) => ({
+      ...curriculum,
+      courseId: course.id,
+    }));
+  });
+
+  await drizzle.db.insert(curriculums).values(curriculumRecords);
+
   console.log(`✅ Inserted ${insertedTrainers.length} trainers.`);
   console.log(`✅ Inserted ${insertedCourses.length} courses.`);
   console.log(
     `✅ Linked ${courseTrainerRecords.length} course-trainer records.`,
   );
+  console.log(`✅ Inserted ${curriculumRecords.length} curriculums.`);
 
   await app.close();
 }

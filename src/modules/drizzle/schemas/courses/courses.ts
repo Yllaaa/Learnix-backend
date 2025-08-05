@@ -5,6 +5,7 @@ import { cities } from '../global/cities';
 import { countries } from '../global/countries';
 import { courseCategories } from './categories';
 import { trainers } from '../trainers/trainers';
+import { curriculums } from './curriculum';
 
 export const courses = pgTable('courses', {
   id: serial('id').primaryKey(),
@@ -34,6 +35,7 @@ export const coursesRelations = relations(courses, ({ one, many }) => ({
     references: [courseCategories.id],
   }),
   trainers: many(courseTrainers),
+  curriculums: many(curriculums),
 }));
 
 export const courseTrainers = pgTable('course_trainers', {

@@ -22,6 +22,13 @@
       "when": 1754395468776,
       "tag": "0002_new_kabuki",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1754417345709,
+      "tag": "0003_smooth_ultimatum",
+      "breakpoints": true
     }
   ]
 }
