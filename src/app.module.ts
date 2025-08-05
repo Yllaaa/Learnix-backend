@@ -6,14 +6,20 @@ import { CoursesModule } from './modules/courses/courses.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LocaleInterceptor } from './modules/common/interceptors/language.interceptor';
+import { TrainersModule } from './modules/trainers/trainers.module';
+import { CommonModule } from './modules/common/common.module';
+import { LeadWeekendModule } from './modules/lead-weekend/lead-weekend.module';
 
 @Module({
   imports: [
     DrizzleModule,
     CoursesModule,
+    CommonModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TrainersModule,
+    LeadWeekendModule,
   ],
   controllers: [AppController],
   providers: [

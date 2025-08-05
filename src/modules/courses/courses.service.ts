@@ -1,19 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CoursesRepository } from './courses.repository';
-import { LocalizedCourseResponseDto } from './dto/course-response.dto';
+import {
+  CourseResponseDto,
+  CourseOverviewResponseDto,
+} from './dto/course-response.dto';
 import { CourseFilters } from './query-builders/course.query-builder';
-import { PaginatedResponse } from '../common/interfaces/paginated-response.interface';
+import { ApiPaginatedResponse } from '../common/interfaces/api-paginated-response.interface';
 import { Language } from '../common/enums/language.enum';
+import { LocalizationService } from '../common/services/localization.service';
 
 @Injectable()
 export class CoursesService {
-  constructor(private readonly coursesRepository: CoursesRepository) {}
+  constructor(
+    private readonly coursesRepository: CoursesRepository,
+    private readonly localizationService: LocalizationService,
+  ) {}
 
   async findAll(
     filters: CourseFilters = {},
     pagination: { page?: number; perPage?: number } = {},
     locale: string = 'en',
-  ): Promise<PaginatedResponse<LocalizedCourseResponseDto>> {
+  ): Promise<ApiPaginatedResponse<CourseResponseDto>> {
     const page = pagination.page || 1;
     const perPage = Math.min(pagination.perPage || 10, 100);
 
@@ -42,24 +49,46 @@ export class CoursesService {
     };
   }
 
-  private localizeCourse(
-    course: any,
-    locale: string,
-  ): LocalizedCourseResponseDto {
+  async findOne(
+    id: number,
+    locale: string = 'en',
+  ): Promise<CourseOverviewResponseDto> {
+    const course = await this.coursesRepository.findById(id);
+
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${id} not found`);
+    }
+
+    return this.localizeCourseOverview(course, locale);
+  }
+
+  async getCourseCategories(
+    locale: string = 'en',
+  ): Promise<{ id: number; name: string }[]> {
+    const categories = await this.coursesRepository.getCourseCategories();
+    return categories.map((category) => ({
+      id: category.id,
+      name: this.localizationService.getLocalizedName(category, locale),
+    }));
+  }
+
+  private localizeCourse(course: any, locale: string): CourseResponseDto {
     return {
       id: course.id,
-      title: locale === 'ar' ? course.titleAr : course.titleEn,
-      description:
-        locale === 'ar' ? course.descriptionAr : course.descriptionEn,
+      title: this.localizationService.getLocalizedTitle(course, locale),
+      description: this.localizationService.getLocalizedDescription(
+        course,
+        locale,
+      ),
       startDate: course.startDate,
       price: course.price,
       category: course.category
         ? {
             id: Number(course.category.id),
-            name:
-              locale === 'ar'
-                ? String(course.category.nameAr)
-                : String(course.category.nameEn),
+            name: this.localizationService.getLocalizedName(
+              course.category,
+              locale,
+            ),
           }
         : {
             id: 0,
@@ -68,14 +97,84 @@ export class CoursesService {
       country: course.country
         ? {
             id: course.country.id,
-            name:
-              locale === 'ar' ? course.country.nameAr : course.country.nameEn,
+            name: this.localizationService.getLocalizedName(
+              course.country,
+              locale,
+            ),
           }
         : null,
       city: course.city
         ? {
             id: course.city.id,
-            name: locale === 'ar' ? course.city.nameAr : course.city.nameEn,
+            name: this.localizationService.getLocalizedName(
+              course.city,
+              locale,
+            ),
+          }
+        : null,
+    };
+  }
+
+  private localizeCourseOverview(
+    course: any,
+    locale: string,
+  ): CourseOverviewResponseDto {
+    return {
+      id: course.id,
+      title: this.localizationService.getLocalizedTitle(course, locale),
+      description: this.localizationService.getLocalizedDescription(
+        course,
+        locale,
+      ),
+      startDate: course.startDate,
+      price: course.price,
+      category: course.category
+        ? {
+            id: Number(course.category.id),
+            name: this.localizationService.getLocalizedName(
+              course.category,
+              locale,
+            ),
+          }
+        : null,
+      trainers:
+        course.trainers?.map((trainerRelation: any) => ({
+          id: trainerRelation.trainer.id,
+          name: this.localizationService.getLocalizedName(
+            trainerRelation.trainer,
+            locale,
+          ),
+          title: this.localizationService.getLocalizedTitle(
+            trainerRelation.trainer,
+            locale,
+          ),
+          linkedIn: trainerRelation.trainer.linkedIn,
+        })) || [],
+      curriculums:
+        course.curriculums?.map((curriculum: any) => ({
+          id: curriculum.id,
+          name: this.localizationService.getLocalizedName(curriculum, locale),
+          description: this.localizationService.getLocalizedDescription(
+            curriculum,
+            locale,
+          ),
+        })) || [],
+      city: course.city
+        ? {
+            id: course.city.id,
+            name: this.localizationService.getLocalizedName(
+              course.city,
+              locale,
+            ),
+            country: course.city.country
+              ? {
+                  id: course.city.country.id,
+                  name: this.localizationService.getLocalizedName(
+                    course.city.country,
+                    locale,
+                  ),
+                }
+              : null,
           }
         : null,
     };

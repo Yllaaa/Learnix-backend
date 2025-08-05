@@ -15,6 +15,27 @@
       "when": 1754313479828,
       "tag": "0001_great_lifeguard",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1754395468776,
+      "tag": "0002_new_kabuki",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1754417345709,
+      "tag": "0003_smooth_ultimatum",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1754430487514,
+      "tag": "0004_special_iron_fist",
+      "breakpoints": true
     }
   ]
 }
