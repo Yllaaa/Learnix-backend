@@ -16,6 +16,7 @@ export const courses = pgTable('courses', {
   price: integer('price'),
   cityId: serial('city_id').references(() => cities.id),
   categoryId: serial('category_id').references(() => courseCategories.id),
+  picture: text('picture'),
   ...timestamps,
 });
 
