@@ -5,6 +5,7 @@ import {
   VisitorMessageDto,
 } from './dto/forms.dto';
 import { ContactService } from './contact.service';
+
 @Controller('contact')
 export class ContactController {
   constructor(private readonly service: ContactService) {}

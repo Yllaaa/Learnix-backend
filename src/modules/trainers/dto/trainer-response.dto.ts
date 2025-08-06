@@ -3,4 +3,5 @@ export class TrainerResponseDto {
   name: string;
   title: string | null;
   linkedIn: string | null;
+  leadWeekend: boolean;
 }

@@ -13,13 +13,14 @@ export class TrainersService {
   ) {}
 
   async findAll(
+    leadWeekend: boolean,
     pagination: { page?: number; perPage?: number } = {},
     locale: string = 'en',
   ): Promise<ApiPaginatedResponse<TrainerResponseDto>> {
     const page = pagination.page || 1;
     const perPage = Math.min(pagination.perPage || 10, 100);
 
-    const { data, total } = await this.trainersRepository.findAll({
+    const { data, total } = await this.trainersRepository.findAll(leadWeekend, {
       page,
       perPage,
     });
@@ -50,6 +51,7 @@ export class TrainersService {
       name: this.localizationService.getLocalizedName(trainer, locale),
       title: this.localizationService.getLocalizedTitle(trainer, locale),
       linkedIn: trainer.linkedIn,
+      leadWeekend: trainer.leadWeekend,
     };
   }
 }

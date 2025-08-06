@@ -1,7 +1,7 @@
 import { pgTable, text, date, integer, serial } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { timestamps } from '../columns.helpers';
-import { cities } from '../global/cities';
+import { cities } from '../globe/cities';
 import { courseCategories } from './categories';
 import { trainers } from '../trainers/trainers';
 import { curriculums } from './curriculum';
