@@ -492,7 +492,7 @@ async function seed() {
     const trainers = courseData[index].trainers;
     return trainers.map((trainer) => ({
       courseId: course.id,
-      trainerId: trainer!.id,
+      trainerId: trainer.id,
     }));
   });
 

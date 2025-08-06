@@ -1,5 +1,5 @@
-import { IsOptional, IsString, IsNumberString, Min } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { IsOptional, IsString, IsNumberString } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { PaginationDto } from 'src/modules/common/dto/pagination.dto';
 
 export class CitiesQueryDto extends PaginationDto {
