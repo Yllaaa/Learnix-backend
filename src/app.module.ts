@@ -9,6 +9,8 @@ import { LocaleInterceptor } from './modules/common/interceptors/language.interc
 import { TrainersModule } from './modules/trainers/trainers.module';
 import { CommonModule } from './modules/common/common.module';
 import { LeadWeekendModule } from './modules/lead-weekend/lead-weekend.module';
+import { ContactModule } from './modules/contact/contact.module';
+import { GlobeModule } from './modules/globe/globe.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { LeadWeekendModule } from './modules/lead-weekend/lead-weekend.module';
     }),
     TrainersModule,
     LeadWeekendModule,
+    ContactModule,
+    GlobeModule,
   ],
   controllers: [AppController],
   providers: [

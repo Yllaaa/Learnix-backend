@@ -15,6 +15,11 @@ export class TrainersController {
     @lang() lang: string,
   ): Promise<ApiPaginatedResponse<TrainerResponseDto>> {
     const { page, perPage } = query;
-    return this.trainersService.findAll({ page, perPage }, lang);
+    const { leadWeekend } = query;
+    return this.trainersService.findAll(
+      leadWeekend as boolean,
+      { page, perPage },
+      lang,
+    );
   }
 }

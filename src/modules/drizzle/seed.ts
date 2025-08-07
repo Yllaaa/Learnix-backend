@@ -7,6 +7,7 @@ import {
   courseTrainers,
   trainers,
   curriculums,
+  leadWeekendApplicants,
 } from './schemas/schema';
 import { AppModule } from '../../app.module';
 import { DrizzleService } from './drizzle.service';
@@ -19,6 +20,7 @@ async function seed() {
   await drizzle.db.delete(courseTrainers).execute();
   await drizzle.db.delete(curriculums).execute(); // Delete curriculums before courses
   await drizzle.db.delete(courses).execute();
+  await drizzle.db.delete(leadWeekendApplicants).execute();
   await drizzle.db.delete(trainers).execute();
   await drizzle.db.delete(cities).execute();
   await drizzle.db.delete(countries).execute();
@@ -113,6 +115,7 @@ async function seed() {
         titleEn: 'Data Science Expert',
         titleAr: 'خبيرة علوم البيانات',
         linkedIn: 'https://linkedin.com/in/sarah-johnson-ds',
+        leadWeekend: true,
       },
       {
         nameEn: 'Mohamed Ali',
@@ -120,6 +123,7 @@ async function seed() {
         titleEn: 'Digital Marketing Specialist',
         titleAr: 'أخصائي التسويق الرقمي',
         linkedIn: 'https://linkedin.com/in/mohamed-ali-marketing',
+        leadWeekend: true,
       },
       {
         nameEn: 'Lisa Chen',
@@ -488,7 +492,7 @@ async function seed() {
     const trainers = courseData[index].trainers;
     return trainers.map((trainer) => ({
       courseId: course.id,
-      trainerId: trainer!.id,
+      trainerId: trainer.id,
     }));
   });
 

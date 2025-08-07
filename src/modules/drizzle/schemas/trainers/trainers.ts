@@ -1,4 +1,4 @@
-import { pgTable, text, serial } from 'drizzle-orm/pg-core';
+import { pgTable, text, serial, boolean } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { timestamps } from '../columns.helpers';
 import { courseTrainers } from '../schema';
@@ -10,6 +10,8 @@ export const trainers = pgTable('trainers', {
   titleEn: text('title_en').notNull(),
   titleAr: text('title_ar').notNull(),
   linkedIn: text('linked_in'),
+  picture: text('picture'),
+  leadWeekend: boolean('lead_weekend').default(false).notNull(),
   ...timestamps,
 });
 

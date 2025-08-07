@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { and, or, ilike, eq, inArray, count } from 'drizzle-orm';
+import { and, or, ilike, eq, inArray, count, gte, lte } from 'drizzle-orm';
 import { DrizzleService } from 'src/modules/drizzle/drizzle.service';
 import {
   courses,
@@ -12,6 +12,8 @@ export interface CourseFilters {
   search?: string;
   cityId?: number;
   categoryIds?: number[];
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 @Injectable()
@@ -75,6 +77,14 @@ export class CourseQueryBuilder {
 
     if (filters.categoryIds?.length) {
       conditions.push(inArray(courses.categoryId, filters.categoryIds));
+    }
+
+    if (filters.dateFrom) {
+      conditions.push(gte(courses.startDate, filters.dateFrom));
+    }
+
+    if (filters.dateTo) {
+      conditions.push(lte(courses.startDate, filters.dateTo));
     }
 
     return conditions.length > 0 ? and(...conditions) : undefined;
