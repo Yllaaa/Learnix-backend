@@ -52,6 +52,7 @@ export class TrainersService {
       title: this.localizationService.getLocalizedTitle(trainer, locale),
       linkedIn: trainer.linkedIn,
       leadWeekend: trainer.leadWeekend,
+      trainerPicture: trainer.trainerPicture,
     };
   }
 }

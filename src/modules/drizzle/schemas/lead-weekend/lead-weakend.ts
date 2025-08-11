@@ -1,7 +1,8 @@
 import { pgTable, text, serial, pgEnum } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { timestamps } from '../columns.helpers';
-import { cities, trainers } from '../schema';
+import { trainers } from '../trainers/trainers';
+import { cities } from '../globe/cities';
 
 export const leadWeekendsApplicationsStatus = pgEnum(
   'lead_weekends_applications_status',

@@ -4,13 +4,16 @@ export class CourseResponseDto {
   description: string | null;
   startDate: string | null;
   price: number | null;
-  category: {
-    id: number;
-    name: string;
-  };
+  categories:
+    | {
+        id: number;
+        name: string;
+      }[]
+    | null;
   country: {
     id: number;
     name: string;
+    iso: string;
   } | null;
   city: {
     id: number;
@@ -24,19 +27,22 @@ export interface CourseOverviewResponseDto {
   description: string;
   startDate: Date;
   price: number;
-  category?: {
-    id: number;
-    name: string;
-  } | null;
+  categories?: Array<{ id: number; name: string }>;
   trainers: Array<{
     id: number;
     name: string;
     title: string;
     linkedIn?: string;
+    trainerPicture?: string;
   }>;
   curriculums: Array<{
     id: number;
     name: string;
+    description: string;
+  }>;
+  outcomes: Array<{
+    id: number;
+    title: string;
     description: string;
   }>;
   city?: {
@@ -45,6 +51,7 @@ export interface CourseOverviewResponseDto {
     country?: {
       id: number;
       name: string;
+      iso: string;
     } | null;
   } | null;
 }

@@ -31,6 +31,7 @@ export class TrainersRepository {
         titleEn: true,
         titleAr: true,
         linkedIn: true,
+        trainerPicture: true,
         leadWeekend: true,
       },
       limit: perPage,

@@ -58,7 +58,7 @@ export class CoursesService {
     if (!course) {
       throw new NotFoundException(`Course with ID ${id} not found`);
     }
-
+    console.log('course', course);
     return this.localizeCourseOverview(course, locale);
   }
 
@@ -82,18 +82,10 @@ export class CoursesService {
       ),
       startDate: course.startDate,
       price: course.price,
-      category: course.category
-        ? {
-            id: Number(course.category.id),
-            name: this.localizationService.getLocalizedName(
-              course.category,
-              locale,
-            ),
-          }
-        : {
-            id: 0,
-            name: '',
-          },
+      categories: course.categories?.map((category: any) => ({
+        id: category.id,
+        name: this.localizationService.getLocalizedName(category, locale),
+      })),
       country: course.country
         ? {
             id: course.country.id,
@@ -101,6 +93,7 @@ export class CoursesService {
               course.country,
               locale,
             ),
+            iso: course.country.iso,
           }
         : null,
       city: course.city
@@ -128,15 +121,15 @@ export class CoursesService {
       ),
       startDate: course.startDate,
       price: course.price,
-      category: course.category
-        ? {
-            id: Number(course.category.id),
-            name: this.localizationService.getLocalizedName(
-              course.category,
-              locale,
-            ),
-          }
-        : null,
+      categories:
+        course.categories?.map((categoryRelation: any) => ({
+          id: categoryRelation.category.id,
+          name: this.localizationService.getLocalizedName(
+            categoryRelation.category,
+            locale,
+          ),
+        })) || [],
+
       trainers:
         course.trainers?.map((trainerRelation: any) => ({
           id: trainerRelation.trainer.id,
@@ -149,6 +142,7 @@ export class CoursesService {
             locale,
           ),
           linkedIn: trainerRelation.trainer.linkedIn,
+          trainerPicture: trainerRelation.trainer.trainerPicture,
         })) || [],
       curriculums:
         course.curriculums?.map((curriculum: any) => ({
@@ -159,6 +153,14 @@ export class CoursesService {
             locale,
           ),
         })) || [],
+      outcomes: course.outcomes?.map((outcome: any) => ({
+        id: outcome.id,
+        name: this.localizationService.getLocalizedTitle(outcome, locale),
+        description: this.localizationService.getLocalizedDescription(
+          outcome,
+          locale,
+        ),
+      })),
       city: course.city
         ? {
             id: course.city.id,
@@ -173,6 +175,7 @@ export class CoursesService {
                     course.city.country,
                     locale,
                   ),
+                  iso: course.city.country.iso,
                 }
               : null,
           }

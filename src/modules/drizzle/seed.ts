@@ -8,6 +8,8 @@ import {
   trainers,
   curriculums,
   leadWeekendApplicants,
+  categories,
+  courseOutcomes,
 } from './schemas/schema';
 import { AppModule } from '../../app.module';
 import { DrizzleService } from './drizzle.service';
@@ -18,13 +20,15 @@ async function seed() {
 
   console.log('🗑️ Deleting existing data...');
   await drizzle.db.delete(courseTrainers).execute();
-  await drizzle.db.delete(curriculums).execute(); // Delete curriculums before courses
+  await drizzle.db.delete(courseCategories).execute();
+  await drizzle.db.delete(courseOutcomes).execute();
+  await drizzle.db.delete(curriculums).execute();
   await drizzle.db.delete(courses).execute();
   await drizzle.db.delete(leadWeekendApplicants).execute();
   await drizzle.db.delete(trainers).execute();
+  await drizzle.db.delete(categories).execute();
   await drizzle.db.delete(cities).execute();
   await drizzle.db.delete(countries).execute();
-  await drizzle.db.delete(courseCategories).execute();
 
   console.log('🌱 Seeding database...');
 
@@ -44,25 +48,49 @@ async function seed() {
         nameEn: 'Cairo',
         nameAr: 'القاهرة',
         countryId: insertedCountries[0].id,
+        cityPicture:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/960px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
       },
       {
         nameEn: 'Alexandria',
         nameAr: 'الإسكندرية',
         countryId: insertedCountries[0].id,
+        cityPicture:
+          'https://www.egiptoexclusivo.com/wp-content/uploads/2023/06/corniche-alejandria.jpg',
       },
-      { nameEn: 'Berlin', nameAr: 'برلين', countryId: insertedCountries[1].id },
+      {
+        nameEn: 'Berlin',
+        nameAr: 'برلين',
+        countryId: insertedCountries[1].id,
+        cityPicture:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/960px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
+      },
       {
         nameEn: 'Munich',
         nameAr: 'ميونيخ',
         countryId: insertedCountries[1].id,
+        cityPicture:
+          'https://www.egiptoexclusivo.com/wp-content/uploads/2023/06/corniche-alejandria.jpg',
       },
-      { nameEn: 'Tokyo', nameAr: 'طوكيو', countryId: insertedCountries[2].id },
-      { nameEn: 'Osaka', nameAr: 'أوساكا', countryId: insertedCountries[2].id },
+      {
+        nameEn: 'Tokyo',
+        nameAr: 'طوكيو',
+        countryId: insertedCountries[2].id,
+        cityPicture:
+          'https://www.egiptoexclusivo.com/wp-content/uploads/2023/06/corniche-alejandria.jpg',
+      },
+      {
+        nameEn: 'Osaka',
+        nameAr: 'أوساكا',
+        countryId: insertedCountries[2].id,
+        cityPicture:
+          'https://www.egiptoexclusivo.com/wp-content/uploads/2023/06/corniche-alejandria.jpg',
+      },
     ])
     .returning();
 
   const insertedCategories = await drizzle.db
-    .insert(courseCategories)
+    .insert(categories)
     .values([
       {
         nameEn: 'Web Development',
@@ -103,34 +131,40 @@ async function seed() {
     .insert(trainers)
     .values([
       {
+        nameEn: 'Mostafa Adel',
+        nameAr: 'مصطفى عادل',
+        titleEn: 'Frontend Developer',
+        titleAr: 'مطور واجهات أمامية',
+        linkedIn: 'https://linkedin.com/in/mostafa-adel-dev',
+        trainerPicture:
+          'https://yllaaa.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FmoustafaAdel.af36deb9.png&w=2048&q=75',
+      },
+      {
         nameEn: 'Ahmed Hassan',
         nameAr: 'أحمد حسن',
-        titleEn: 'Senior Full-Stack Developer',
-        titleAr: 'مطور برمجيات كامل أول',
+        titleEn: 'Backend Developer',
+        titleAr: 'مطور خلفية',
         linkedIn: 'https://linkedin.com/in/ahmed-hassan-dev',
+        trainerPicture:
+          'https://yllaaa.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FmoustafaAdel.af36deb9.png&w=2048&q=75',
       },
       {
-        nameEn: 'Sarah Johnson',
-        nameAr: 'سارة جونسون',
-        titleEn: 'Data Science Expert',
-        titleAr: 'خبيرة علوم البيانات',
-        linkedIn: 'https://linkedin.com/in/sarah-johnson-ds',
-        leadWeekend: true,
-      },
-      {
-        nameEn: 'Mohamed Ali',
-        nameAr: 'محمد علي',
-        titleEn: 'Digital Marketing Specialist',
-        titleAr: 'أخصائي التسويق الرقمي',
-        linkedIn: 'https://linkedin.com/in/mohamed-ali-marketing',
-        leadWeekend: true,
+        nameEn: 'Yehya Abdelhamed',
+        nameAr: 'يحيى عبد الحميد',
+        titleEn: 'SEO Specialist',
+        titleAr: 'خبير تحسين محركات البحث',
+        linkedIn: 'https://linkedin.com/in/yehya-abdelhamed',
+        trainerPicture:
+          'https://yllaaa.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FyehiaAbdelhamed.464f2bb7.png&w=2048&q=75',
       },
       {
         nameEn: 'Lisa Chen',
-        nameAr: 'ليزا تشين',
+        nameAr: 'ليسا تشين',
         titleEn: 'UI/UX Designer & Creative Director',
         titleAr: 'مصممة واجهات ومديرة إبداعية',
         linkedIn: 'https://linkedin.com/in/lisa-chen-design',
+        trainerPicture:
+          'https://yllaaa.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FyehiaAbdelhamed.464f2bb7.png&w=2048&q=75',
       },
       {
         nameEn: 'Omar Khaled',
@@ -140,25 +174,25 @@ async function seed() {
         linkedIn: 'https://linkedin.com/in/omar-khaled-security',
       },
       {
-        nameEn: 'Emma Wilson',
-        nameAr: 'إيما ويلسون',
-        titleEn: 'Frontend Development Lead',
-        titleAr: 'قائدة تطوير الواجهات الأمامية',
-        linkedIn: 'https://linkedin.com/in/emma-wilson-frontend',
+        nameEn: 'Sarah Johnson',
+        nameAr: 'سارة جونسون',
+        titleEn: 'Data Scientist',
+        titleAr: 'عالمة بيانات',
+        linkedIn: 'https://linkedin.com/in/sarah-johnson-data',
+      },
+      {
+        nameEn: 'Mohamed Ali',
+        nameAr: 'محمد علي',
+        titleEn: 'Digital Marketing Specialist',
+        titleAr: 'أخصائي تسويق رقمي',
+        linkedIn: 'https://linkedin.com/in/mohamed-ali-marketing',
       },
       {
         nameEn: 'Yuki Tanaka',
         nameAr: 'يوكي تاناكا',
         titleEn: 'Machine Learning Engineer',
-        titleAr: 'مهندس التعلم الآلي',
+        titleAr: 'مهندس تعلم آلي',
         linkedIn: 'https://linkedin.com/in/yuki-tanaka-ml',
-      },
-      {
-        nameEn: 'Fatima Al-Zahra',
-        nameAr: 'فاطمة الزهراء',
-        titleEn: 'Social Media Marketing Expert',
-        titleAr: 'خبيرة التسويق عبر وسائل التواصل الاجتماعي',
-        linkedIn: 'https://linkedin.com/in/fatima-alzahra-smm',
       },
     ])
     .returning();
@@ -216,8 +250,8 @@ async function seed() {
 
   const trainersByCategory = {
     'Web Development': [
+      insertedTrainers.find((t) => t.nameEn === 'Mostafa Adel'),
       insertedTrainers.find((t) => t.nameEn === 'Ahmed Hassan'),
-      insertedTrainers.find((t) => t.nameEn === 'Emma Wilson'),
     ].filter(Boolean),
     'Data Science': [
       insertedTrainers.find((t) => t.nameEn === 'Sarah Johnson'),
@@ -225,7 +259,7 @@ async function seed() {
     ].filter(Boolean),
     'Digital Marketing': [
       insertedTrainers.find((t) => t.nameEn === 'Mohamed Ali'),
-      insertedTrainers.find((t) => t.nameEn === 'Fatima Al-Zahra'),
+      insertedTrainers.find((t) => t.nameEn === 'Yehya Abdelhamed'),
     ].filter(Boolean),
     'Graphic Design': [
       insertedTrainers.find((t) => t.nameEn === 'Lisa Chen'),
@@ -233,6 +267,131 @@ async function seed() {
     Cybersecurity: [
       insertedTrainers.find((t) => t.nameEn === 'Omar Khaled'),
     ].filter(Boolean),
+  };
+
+  // Add outcomes by category
+  const outcomesByCategory = {
+    'Web Development': [
+      {
+        titleEn: 'Build Responsive Websites',
+        titleAr: 'بناء مواقع ويب متجاوبة',
+        descriptionEn:
+          'Create modern, responsive websites that work on all devices.',
+        descriptionAr: 'إنشاء مواقع ويب حديثة ومتجاوبة تعمل على جميع الأجهزة.',
+      },
+      {
+        titleEn: 'Master Modern JavaScript',
+        titleAr: 'إتقان جافا سكريبت الحديثة',
+        descriptionEn:
+          'Understand ES6+ features and modern JavaScript development patterns.',
+        descriptionAr: 'فهم ميزات ES6+ وأنماط تطوير جافا سكريبت الحديثة.',
+      },
+      {
+        titleEn: 'Deploy Applications',
+        titleAr: 'نشر التطبيقات',
+        descriptionEn:
+          'Learn how to deploy and host web applications in production.',
+        descriptionAr: 'تعلم كيفية نشر واستضافة تطبيقات الويب في الإنتاج.',
+      },
+    ],
+    'Data Science': [
+      {
+        titleEn: 'Analyze Complex Data',
+        titleAr: 'تحليل البيانات المعقدة',
+        descriptionEn:
+          'Extract insights from large datasets using statistical methods.',
+        descriptionAr:
+          'استخراج الرؤى من مجموعات البيانات الكبيرة باستخدام الأساليب الإحصائية.',
+      },
+      {
+        titleEn: 'Build Machine Learning Models',
+        titleAr: 'بناء نماذج التعلم الآلي',
+        descriptionEn:
+          'Create and train machine learning models for real-world problems.',
+        descriptionAr: 'إنشاء وتدريب نماذج التعلم الآلي لمشاكل العالم الحقيقي.',
+      },
+      {
+        titleEn: 'Visualize Data Effectively',
+        titleAr: 'تصور البيانات بفعالية',
+        descriptionEn:
+          'Create compelling data visualizations to communicate findings.',
+        descriptionAr: 'إنشاء تصورات بيانات ملهمة للتواصل مع النتائج.',
+      },
+    ],
+    'Digital Marketing': [
+      {
+        titleEn: 'Increase Brand Visibility',
+        titleAr: 'زيادة رؤية العلامة التجارية',
+        descriptionEn:
+          'Boost your brand presence across digital channels and platforms.',
+        descriptionAr:
+          'تعزيز حضور علامتك التجارية عبر القنوات والمنصات الرقمية.',
+      },
+      {
+        titleEn: 'Generate Qualified Leads',
+        titleAr: 'توليد عملاء محتملين مؤهلين',
+        descriptionEn:
+          'Attract and convert high-quality leads for your business.',
+        descriptionAr: 'جذب وتحويل عملاء محتملين عاليي الجودة لعملك.',
+      },
+      {
+        titleEn: 'Optimize Marketing ROI',
+        titleAr: 'تحسين عائد الاستثمار في التسويق',
+        descriptionEn:
+          'Maximize your marketing budget with data-driven strategies.',
+        descriptionAr:
+          'تعظيم ميزانية التسويق الخاصة بك مع استراتيجيات قائمة على البيانات.',
+      },
+    ],
+    'Graphic Design': [
+      {
+        titleEn: 'Create Professional Designs',
+        titleAr: 'إنشاء تصاميم احترافية',
+        descriptionEn:
+          'Design logos, branding materials, and marketing assets.',
+        descriptionAr: 'تصميم الشعارات، مواد العلامة التجارية، وأصول التسويق.',
+      },
+      {
+        titleEn: 'Master Design Software',
+        titleAr: 'إتقان برامج التصميم',
+        descriptionEn:
+          'Become proficient in industry-standard design tools like Adobe Creative Suite.',
+        descriptionAr:
+          'أن تصبح ماهراً في أدوات التصميم القياسية في الصناعة مثل Adobe Creative Suite.',
+      },
+      {
+        titleEn: 'Develop Design Thinking',
+        titleAr: 'تطوير التفكير التصميمي',
+        descriptionEn:
+          'Apply design principles to solve creative and business problems.',
+        descriptionAr: 'تطبيق مبادئ التصميم لحل المشاكل الإبداعية والأعمال.',
+      },
+    ],
+    Cybersecurity: [
+      {
+        titleEn: 'Identify Security Threats',
+        titleAr: 'تحديد التهديدات الأمنية',
+        descriptionEn:
+          'Recognize and analyze potential security vulnerabilities and threats.',
+        descriptionAr: 'التعرف وتحليل الثغرات والأمان المحتملة والتهديدات.',
+      },
+      {
+        titleEn: 'Implement Security Measures',
+        titleAr: 'تنفيذ تدابير الأمان',
+        descriptionEn:
+          'Deploy effective security controls to protect systems and data.',
+        descriptionAr:
+          'نشر عناصر تحكم الأمان الفعالة لحماية الأنظمة والبيانات.',
+      },
+      {
+        titleEn: 'Respond to Security Incidents',
+        titleAr: 'الاستجابة للحوادث الأمنية',
+        descriptionEn:
+          'Handle security breaches and implement incident response procedures.',
+        descriptionAr:
+          'التعامل مع انتهاكات الأمان وتنفيذ إجراءات الاستجابة للحوادث.',
+      },
+    ],
   };
 
   const curriculumsByCourse = {
@@ -449,45 +608,83 @@ async function seed() {
     ],
   };
 
-  const courseData = insertedCategories.flatMap((category) => {
-    const titles =
-      coursesByCategory[category.nameEn as keyof typeof coursesByCategory];
-    const categoryTrainers = trainersByCategory[
-      category.nameEn as keyof typeof trainersByCategory
-    ] as typeof insertedTrainers;
-
-    return titles.map((title) => {
-      const country = getRandom(insertedCountries);
-      const city = getRandom(
-        insertedCities.filter((c) => c.countryId === country.id),
+  // Create courses without category assignment
+  const courseData = Object.entries(coursesByCategory).flatMap(
+    ([categoryName, titles]) => {
+      const category = insertedCategories.find(
+        (c) => c.nameEn === categoryName,
       );
-      const [min, max] = priceRange[category.nameEn as keyof typeof priceRange];
-      const price = Math.floor(Math.random() * (max - min) + min);
-      const startDate = new Date();
-      startDate.setDate(
-        startDate.getDate() + Math.floor(Math.random() * 90 + 10),
-      );
+      const categoryTrainers = trainersByCategory[
+        categoryName as keyof typeof trainersByCategory
+      ] as typeof insertedTrainers;
+      const categoryOutcomes = outcomesByCategory[
+        categoryName as keyof typeof outcomesByCategory
+      ] as any[];
 
-      return {
-        titleEn: title,
-        titleAr: `دورة ${title}`,
-        descriptionEn:
-          descriptions[category.nameEn as keyof typeof descriptions],
-        descriptionAr: `وصف ${category.nameAr} باللغة العربية.`,
-        startDate: startDate.toISOString().split('T')[0],
-        price,
-        cityId: city.id,
-        categoryId: category.id,
-        trainers: categoryTrainers,
-      };
-    });
-  });
+      return titles.map((title) => {
+        const country = getRandom(insertedCountries);
+        const city = getRandom(
+          insertedCities.filter((c) => c.countryId === country.id),
+        );
+        const [min, max] = priceRange[categoryName as keyof typeof priceRange];
+        const price = Math.floor(Math.random() * (max - min) + min);
+        const startDate = new Date();
+        startDate.setDate(
+          startDate.getDate() + Math.floor(Math.random() * 90 + 10),
+        );
+
+        return {
+          titleEn: title,
+          titleAr: `دورة ${title}`,
+          descriptionEn:
+            descriptions[categoryName as keyof typeof descriptions],
+          descriptionAr: `وصف ${category?.nameAr || categoryName} باللغة العربية.`,
+          startDate: startDate.toISOString().split('T')[0],
+          price,
+          cityId: city.id,
+          categoryId: category?.id,
+          trainers: categoryTrainers,
+          categoryName,
+          outcomes: categoryOutcomes,
+        };
+      });
+    },
+  );
 
   const insertedCourses = await drizzle.db
     .insert(courses)
-    .values(courseData.map(({ trainers, ...course }) => course))
+    .values(
+      courseData.map(({ trainers, categoryName, outcomes, ...course }) => ({
+        titleEn: course.titleEn,
+        titleAr: course.titleAr,
+        descriptionEn: course.descriptionEn,
+        descriptionAr: course.descriptionAr,
+        startDate: course.startDate,
+        price: course.price,
+        cityId: course.cityId,
+      })),
+    )
     .returning();
 
+  // Create course-category relationships (many-to-many)
+  const courseCategoryRecords = insertedCourses
+    .map((course, index) => {
+      const originalCourseData = courseData[index];
+      const category = insertedCategories.find(
+        (c) => c.nameEn === originalCourseData.categoryName,
+      );
+      return {
+        courseId: course.id,
+        categoryId: category?.id,
+      };
+    })
+    .filter((record) => record.categoryId);
+
+  if (courseCategoryRecords.length > 0) {
+    await drizzle.db.insert(courseCategories).values(courseCategoryRecords);
+  }
+
+  // Create course-trainer relationships
   const courseTrainerRecords = insertedCourses.flatMap((course, index) => {
     const trainers = courseData[index].trainers;
     return trainers.map((trainer) => ({
@@ -496,8 +693,24 @@ async function seed() {
     }));
   });
 
-  await drizzle.db.insert(courseTrainers).values(courseTrainerRecords);
+  if (courseTrainerRecords.length > 0) {
+    await drizzle.db.insert(courseTrainers).values(courseTrainerRecords);
+  }
 
+  // Create course outcomes
+  const outcomeRecords = insertedCourses.flatMap((course, index) => {
+    const outcomes = courseData[index].outcomes;
+    return outcomes.map((outcome) => ({
+      ...outcome,
+      courseId: course.id,
+    }));
+  });
+
+  if (outcomeRecords.length > 0) {
+    await drizzle.db.insert(courseOutcomes).values(outcomeRecords);
+  }
+
+  // Create curriculums
   const curriculumRecords = insertedCourses.flatMap((course, index) => {
     const courseTitle = courseData[index].titleEn;
     const curriculumsForCourse =
@@ -509,13 +722,22 @@ async function seed() {
     }));
   });
 
-  await drizzle.db.insert(curriculums).values(curriculumRecords);
+  if (curriculumRecords.length > 0) {
+    await drizzle.db.insert(curriculums).values(curriculumRecords);
+  }
 
+  console.log(`✅ Inserted ${insertedCountries.length} countries.`);
+  console.log(`✅ Inserted ${insertedCities.length} cities.`);
+  console.log(`✅ Inserted ${insertedCategories.length} categories.`);
   console.log(`✅ Inserted ${insertedTrainers.length} trainers.`);
   console.log(`✅ Inserted ${insertedCourses.length} courses.`);
   console.log(
+    `✅ Linked ${courseCategoryRecords.length} course-category records.`,
+  );
+  console.log(
     `✅ Linked ${courseTrainerRecords.length} course-trainer records.`,
   );
+  console.log(`✅ Inserted ${outcomeRecords.length} course outcomes.`);
   console.log(`✅ Inserted ${curriculumRecords.length} curriculums.`);
 
   await app.close();

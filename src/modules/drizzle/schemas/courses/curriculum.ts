@@ -1,7 +1,7 @@
 import { pgTable, text, serial } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { timestamps } from '../columns.helpers';
-import { courses } from '../schema';
+import { courses } from './courses';
 
 export const curriculums = pgTable('curriculums', {
   id: serial('id').primaryKey(),
