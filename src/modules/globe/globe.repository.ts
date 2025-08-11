@@ -66,8 +66,7 @@ export class GlobeRepository {
         nameEn: cities.nameEn,
         nameAr: cities.nameAr,
         countryId: cities.countryId,
-        createdAt: cities.createdAt,
-        updatedAt: cities.updatedAt,
+        cityPicture: cities.cityPicture,
       })
       .from(cities)
       .where(whereClause)

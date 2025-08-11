@@ -50,6 +50,7 @@ export class GlobeService {
       id: city.id,
       name: this.localizationService.getLocalizedName(city, locale),
       countryId: city.countryId,
+      cityPicture: city.cityPicture,
     };
 
     return localizedCity;
