@@ -7,3 +7,4 @@ export * from './courses/curriculum';
 export * from './lead-weekend/lead-weakend';
 export * from './contact/forms';
 export * from './contact/vistors-messages';
+export * from './courses/course-registeration';

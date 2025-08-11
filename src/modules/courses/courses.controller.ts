@@ -1,4 +1,12 @@
-import { Controller, Get, Query, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  ParseIntPipe,
+  Post,
+  Body,
+} from '@nestjs/common';
 import { CourseQueryDto } from './dto/course-query.dto';
 import {
   CourseResponseDto,
@@ -7,6 +15,7 @@ import {
 import { CoursesService } from './courses.service';
 import { lang } from '../common/decorators/lang.decorator';
 import { ApiPaginatedResponse } from '../common/interfaces/api-paginated-response.interface';
+import { RegisterCourseDto } from './dto/register-course.dto';
 
 @Controller('courses')
 export class CoursesController {
@@ -35,5 +44,10 @@ export class CoursesController {
     @lang() lang: string,
   ): Promise<CourseOverviewResponseDto> {
     return this.coursesService.findOne(id, lang);
+  }
+
+  @Post(':id/register')
+  async apply(@Body() dto: RegisterCourseDto, @Param('id') id: number) {
+    return this.coursesService.registerCourse(dto, id);
   }
 }

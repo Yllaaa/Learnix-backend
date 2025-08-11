@@ -4,6 +4,8 @@ import {
   CourseFilters,
 } from './query-builders/course.query-builder';
 import { DrizzleService } from '../drizzle/drizzle.service';
+import { RegisterCourseDto } from './dto/register-course.dto';
+import { courseRegisteration } from '../drizzle/schemas/schema';
 @Injectable()
 export class CoursesRepository {
   constructor(
@@ -96,5 +98,17 @@ export class CoursesRepository {
         nameAr: true,
       },
     });
+  }
+
+  async register(dto: RegisterCourseDto, id: number) {
+    const [registration] = await this.drizzleService.db
+      .insert(courseRegisteration)
+      .values({
+        ...dto,
+        courseId: id,
+      })
+      .returning();
+
+    return registration;
   }
 }
