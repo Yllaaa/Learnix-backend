@@ -8,6 +8,7 @@ export const cities = pgTable('cities', {
   id: serial('id').primaryKey(),
   nameEn: text('name_en').notNull(),
   nameAr: text('name_ar').notNull(),
+  cityPicture: text('city_picture'),
   countryId: serial('country_id')
     .notNull()
     .references(() => countries.id, {

@@ -8,4 +8,5 @@ export class CityResponseDto {
   id: number;
   name: string;
   countryId: number;
+  cityPicture: string | null;
 }

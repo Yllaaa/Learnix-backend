@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { and, or, ilike, eq, inArray, count, gte, lte } from 'drizzle-orm';
+import { and, or, ilike, eq, count, gte, lte, sql } from 'drizzle-orm';
 import { DrizzleService } from 'src/modules/drizzle/drizzle.service';
 import {
   courses,
   countries,
   cities,
   courseCategories,
+  categories,
 } from 'src/modules/drizzle/schemas/schema';
 
 export interface CourseFilters {
   search?: string;
   cityId?: number;
-  categoryIds?: number[];
+  categoryId?: number;
   dateFrom?: string;
   dateTo?: string;
 }
@@ -30,26 +31,36 @@ export class CourseQueryBuilder {
         descriptionAr: courses.descriptionAr,
         startDate: courses.startDate,
         price: courses.price,
-        category: {
-          id: courseCategories.id,
-          nameAr: courseCategories.nameAr,
-          nameEn: courseCategories.nameEn,
-        },
         country: {
           id: countries.id,
           nameAr: countries.nameAr,
           nameEn: countries.nameEn,
+          iso: countries.iso,
         },
         city: {
           id: cities.id,
           nameAr: cities.nameAr,
           nameEn: cities.nameEn,
         },
+        categories: sql`
+          COALESCE(
+            json_agg(
+              DISTINCT jsonb_build_object(
+                'id', ${categories.id},
+                'nameAr', ${categories.nameAr},
+                'nameEn', ${categories.nameEn}
+              )
+            ) FILTER (WHERE ${categories.id} IS NOT NULL),
+            '[]'
+          )
+        `.as('categories'),
       })
       .from(courses)
       .leftJoin(cities, eq(courses.cityId, cities.id))
       .leftJoin(countries, eq(cities.countryId, countries.id))
-      .leftJoin(courseCategories, eq(courses.categoryId, courseCategories.id));
+      .leftJoin(courseCategories, eq(courses.id, courseCategories.courseId))
+      .leftJoin(categories, eq(courseCategories.categoryId, categories.id))
+      .groupBy(courses.id, cities.id, countries.id);
   }
 
   buildWhereClause(filters: CourseFilters) {
@@ -57,7 +68,8 @@ export class CourseQueryBuilder {
       | ReturnType<typeof eq>
       | ReturnType<typeof or>
       | ReturnType<typeof ilike>
-      | ReturnType<typeof inArray>
+      | ReturnType<typeof gte>
+      | ReturnType<typeof lte>
     > = [];
 
     if (filters.search) {
@@ -73,10 +85,6 @@ export class CourseQueryBuilder {
 
     if (filters.cityId) {
       conditions.push(eq(courses.cityId, filters.cityId));
-    }
-
-    if (filters.categoryIds?.length) {
-      conditions.push(inArray(courses.categoryId, filters.categoryIds));
     }
 
     if (filters.dateFrom) {
@@ -100,27 +108,99 @@ export class CourseQueryBuilder {
     const perPage = Math.min(pagination?.perPage || 10, 100);
     const offset = (page - 1) * perPage;
 
-    const query = this.baseQuery
-      .where(whereClause)
-      .limit(perPage)
-      .offset(offset);
+    let query: any = this.drizzleService.db
+      .select({
+        id: courses.id,
+        titleEn: courses.titleEn,
+        titleAr: courses.titleAr,
+        descriptionEn: courses.descriptionEn,
+        descriptionAr: courses.descriptionAr,
+        startDate: courses.startDate,
+        price: courses.price,
+        country: {
+          id: countries.id,
+          nameAr: countries.nameAr,
+          nameEn: countries.nameEn,
+          iso: countries.iso,
+        },
+        city: {
+          id: cities.id,
+          nameAr: cities.nameAr,
+          nameEn: cities.nameEn,
+        },
+        categories: sql`
+        COALESCE(
+          json_agg(
+            DISTINCT jsonb_build_object(
+              'id', ${categories.id},
+              'nameAr', ${categories.nameAr},
+              'nameEn', ${categories.nameEn}
+            )
+          ) FILTER (WHERE ${categories.id} IS NOT NULL),
+          '[]'
+        )
+      `.as('categories'),
+      })
+      .from(courses)
+      .leftJoin(cities, eq(courses.cityId, cities.id))
+      .leftJoin(countries, eq(cities.countryId, countries.id))
+      .leftJoin(courseCategories, eq(courses.id, courseCategories.courseId))
+      .leftJoin(categories, eq(courseCategories.categoryId, categories.id))
+      .groupBy(courses.id, cities.id, countries.id);
 
-    return await query;
+    if (whereClause) {
+      query = query.where(whereClause);
+    }
+
+    if (filters.categoryId !== undefined) {
+      query = query.having(
+        sql`EXISTS (
+      SELECT 1 FROM ${courseCategories}
+      WHERE ${courseCategories.courseId} = ${courses.id}
+        AND ${courseCategories.categoryId} = ${filters.categoryId}
+         )`,
+      );
+    }
+    const result = await query.limit(perPage).offset(offset);
+
+    return result.map((row: any) => ({
+      ...row,
+      categories:
+        typeof row.categories === 'string'
+          ? JSON.parse(row.categories)
+          : Array.isArray(row.categories)
+            ? row.categories
+            : [],
+    }));
   }
 
   async count(filters: CourseFilters = {}): Promise<number> {
     const whereClause = this.buildWhereClause(filters);
 
-    const countQuery = this.drizzleService.db
-      .select({ count: count() })
+    let countQuery = this.drizzleService.db
+      .select({ count: count(courses.id) })
       .from(courses)
       .leftJoin(cities, eq(courses.cityId, cities.id))
       .leftJoin(countries, eq(cities.countryId, countries.id))
-      .leftJoin(courseCategories, eq(courses.categoryId, courseCategories.id))
-      .where(whereClause);
+      .leftJoin(courseCategories, eq(courses.id, courseCategories.courseId))
+      .leftJoin(categories, eq(courseCategories.categoryId, categories.id))
+      .groupBy(courses.id);
+
+    if (whereClause) {
+      countQuery = countQuery.where(whereClause) as any;
+    }
+
+    if (filters.categoryId) {
+      countQuery = countQuery.having(
+        sql`EXISTS (
+      SELECT 1 FROM ${courseCategories}
+      WHERE ${courseCategories.courseId} = ${courses.id}
+        AND ${courseCategories.categoryId} = ${filters.categoryId}
+    )`,
+      ) as any;
+    }
 
     const result = await countQuery;
-
     return result[0]?.count || 0;
   }
 }

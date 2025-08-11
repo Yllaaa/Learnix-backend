@@ -39,6 +39,7 @@ export class CoursesRepository {
                 titleEn: true,
                 titleAr: true,
                 linkedIn: true,
+                trainerPicture: true,
               },
             },
           },
@@ -55,15 +56,21 @@ export class CoursesRepository {
                 id: true,
                 nameEn: true,
                 nameAr: true,
+                iso: true,
               },
             },
           },
         },
-        category: {
-          columns: {
-            id: true,
-            nameEn: true,
-            nameAr: true,
+        categories: {
+          columns: {},
+          with: {
+            category: {
+              columns: {
+                id: true,
+                nameEn: true,
+                nameAr: true,
+              },
+            },
           },
         },
         curriculums: {
@@ -73,6 +80,15 @@ export class CoursesRepository {
             nameAr: true,
             descriptionEn: true,
             descriptionAr: true,
+          },
+        },
+        outcomes: {
+          columns: {
+            id: true,
+            titleEn: true,
+            titleAr: true,
+            descriptionAr: true,
+            descriptionEn: true,
           },
         },
       },
@@ -91,7 +107,7 @@ export class CoursesRepository {
   }
 
   async getCourseCategories(): Promise<any[]> {
-    return this.drizzleService.db.query.courseCategories.findMany({
+    return this.drizzleService.db.query.categories.findMany({
       columns: {
         id: true,
         nameEn: true,

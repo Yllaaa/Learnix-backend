@@ -4,4 +4,5 @@ export class TrainerResponseDto {
   title: string | null;
   linkedIn: string | null;
   leadWeekend: boolean;
+  trainerPicture: string | null;
 }
