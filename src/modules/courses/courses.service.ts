@@ -8,6 +8,7 @@ import { CourseFilters } from './query-builders/course.query-builder';
 import { ApiPaginatedResponse } from '../common/interfaces/api-paginated-response.interface';
 import { Language } from '../common/enums/language.enum';
 import { LocalizationService } from '../common/services/localization.service';
+import { RegisterCourseDto } from './dto/register-course.dto';
 
 @Injectable()
 export class CoursesService {
@@ -60,6 +61,10 @@ export class CoursesService {
     }
     console.log('course', course);
     return this.localizeCourseOverview(course, locale);
+  }
+
+  async registerCourse(dto: RegisterCourseDto, id: number) {
+    return this.coursesRepository.register(dto, id);
   }
 
   async getCourseCategories(
