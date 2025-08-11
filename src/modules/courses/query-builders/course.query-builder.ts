@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { and, or, ilike, eq, inArray, count, gte, lte, sql } from 'drizzle-orm';
+import { and, or, ilike, eq, count, gte, lte, sql } from 'drizzle-orm';
 import { DrizzleService } from 'src/modules/drizzle/drizzle.service';
 import {
   courses,
@@ -12,7 +12,7 @@ import {
 export interface CourseFilters {
   search?: string;
   cityId?: number;
-  categoryIds?: number[];
+  categoryId?: number;
   dateFrom?: string;
   dateTo?: string;
 }
@@ -152,17 +152,15 @@ export class CourseQueryBuilder {
       query = query.where(whereClause);
     }
 
-    if (filters.categoryIds?.length) {
+    if (filters.categoryId !== undefined) {
       query = query.having(
         sql`EXISTS (
-        SELECT 1
-        FROM ${courseCategories}
-        WHERE ${courseCategories.courseId} = ${courses.id}
-          AND ${inArray(courseCategories.categoryId, filters.categoryIds)}
-      )`,
+      SELECT 1 FROM ${courseCategories}
+      WHERE ${courseCategories.courseId} = ${courses.id}
+        AND ${courseCategories.categoryId} = ${filters.categoryId}
+         )`,
       );
     }
-
     const result = await query.limit(perPage).offset(offset);
 
     return result.map((row: any) => ({
@@ -180,7 +178,7 @@ export class CourseQueryBuilder {
     const whereClause = this.buildWhereClause(filters);
 
     let countQuery = this.drizzleService.db
-      .select({ count: count() })
+      .select({ count: count(courses.id) })
       .from(courses)
       .leftJoin(cities, eq(courses.cityId, cities.id))
       .leftJoin(countries, eq(cities.countryId, countries.id))
@@ -192,14 +190,13 @@ export class CourseQueryBuilder {
       countQuery = countQuery.where(whereClause) as any;
     }
 
-    if (filters.categoryIds?.length) {
+    if (filters.categoryId) {
       countQuery = countQuery.having(
         sql`EXISTS (
-        SELECT 1
-        FROM ${courseCategories}
-        WHERE ${courseCategories.courseId} = ${courses.id}
-          AND ${inArray(courseCategories.categoryId, filters.categoryIds)}
-      )`,
+      SELECT 1 FROM ${courseCategories}
+      WHERE ${courseCategories.courseId} = ${courses.id}
+        AND ${courseCategories.categoryId} = ${filters.categoryId}
+    )`,
       ) as any;
     }
 

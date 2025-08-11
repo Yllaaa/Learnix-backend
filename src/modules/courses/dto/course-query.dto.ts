@@ -16,9 +16,8 @@ export class CourseQueryDto extends PaginationDto {
   search?: string;
 
   @IsOptional()
-  @IsArray()
   @Type(() => Number)
-  categoryIds?: number[];
+  categoryId?: number;
 
   @IsOptional()
   @Type(() => Number)
