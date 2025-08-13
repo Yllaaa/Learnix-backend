@@ -35,9 +35,9 @@ async function seed() {
   const insertedCountries = await drizzle.db
     .insert(countries)
     .values([
-      { nameEn: 'Egypt', nameAr: 'مصر', iso: 'EG' },
-      { nameEn: 'Germany', nameAr: 'ألمانيا', iso: 'DE' },
-      { nameEn: 'Japan', nameAr: 'اليابان', iso: 'JP' },
+      { name: 'Egypt', nameEn: 'Egypt', nameAr: 'مصر', iso: 'EG' },
+      { name: 'Germany', nameEn: 'Germany', nameAr: 'ألمانيا', iso: 'DE' },
+      { name: 'Japan', nameEn: 'Japan', nameAr: 'اليابان', iso: 'JP' },
     ])
     .returning();
 
@@ -45,6 +45,7 @@ async function seed() {
     .insert(cities)
     .values([
       {
+        name: 'Cairo',
         nameEn: 'Cairo',
         nameAr: 'القاهرة',
         countryId: insertedCountries[0].id,
@@ -52,6 +53,7 @@ async function seed() {
           'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/960px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
       },
       {
+        name: 'Alexandria',
         nameEn: 'Alexandria',
         nameAr: 'الإسكندرية',
         countryId: insertedCountries[0].id,
@@ -59,6 +61,7 @@ async function seed() {
           'https://www.egiptoexclusivo.com/wp-content/uploads/2023/06/corniche-alejandria.jpg',
       },
       {
+        name: 'Berlin',
         nameEn: 'Berlin',
         nameAr: 'برلين',
         countryId: insertedCountries[1].id,
@@ -66,6 +69,7 @@ async function seed() {
           'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Paris_-_Eiffelturm_und_Marsfeld2.jpg/960px-Paris_-_Eiffelturm_und_Marsfeld2.jpg',
       },
       {
+        name: 'Munich',
         nameEn: 'Munich',
         nameAr: 'ميونيخ',
         countryId: insertedCountries[1].id,
@@ -73,6 +77,7 @@ async function seed() {
           'https://www.egiptoexclusivo.com/wp-content/uploads/2023/06/corniche-alejandria.jpg',
       },
       {
+        name: 'Tokyo',
         nameEn: 'Tokyo',
         nameAr: 'طوكيو',
         countryId: insertedCountries[2].id,
@@ -80,6 +85,7 @@ async function seed() {
           'https://www.egiptoexclusivo.com/wp-content/uploads/2023/06/corniche-alejandria.jpg',
       },
       {
+        name: 'Osaka',
         nameEn: 'Osaka',
         nameAr: 'أوساكا',
         countryId: insertedCountries[2].id,
@@ -93,24 +99,28 @@ async function seed() {
     .insert(categories)
     .values([
       {
+        name: 'Web Development',
         nameEn: 'Web Development',
         nameAr: 'تطوير الويب',
         descriptionEn: 'Learn how to build websites and web applications.',
         descriptionAr: 'تعلم كيفية بناء مواقع الويب وتطبيقات الويب.',
       },
       {
+        name: 'Mobile Development',
         nameEn: 'Data Science',
         nameAr: 'علوم البيانات',
         descriptionEn: 'Explore data analysis, machine learning, and AI.',
         descriptionAr: 'استكشف تحليل البيانات والتعلم الآلي والذكاء الاصطناعي.',
       },
       {
+        name: 'Digital Marketing',
         nameEn: 'Digital Marketing',
         nameAr: 'التسويق الرقمي',
         descriptionEn: 'Master online marketing strategies and tools.',
         descriptionAr: 'اتقن استراتيجيات وأدوات التسويق عبر الإنترنت.',
       },
       {
+        name: 'Graphic Design',
         nameEn: 'Graphic Design',
         nameAr: 'تصميم الجرافيك',
         descriptionEn:
@@ -118,6 +128,7 @@ async function seed() {
         descriptionAr: 'تعلم مبادئ التصميم وكيفية استخدام برامج التصميم.',
       },
       {
+        name: 'Cybersecurity',
         nameEn: 'Cybersecurity',
         nameAr: 'الأمن السيبراني',
         descriptionEn:
@@ -131,6 +142,7 @@ async function seed() {
     .insert(trainers)
     .values([
       {
+        name: 'Mostafa Adel',
         nameEn: 'Mostafa Adel',
         nameAr: 'مصطفى عادل',
         titleEn: 'Frontend Developer',
@@ -140,6 +152,7 @@ async function seed() {
           'https://yllaaa.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FmoustafaAdel.af36deb9.png&w=2048&q=75',
       },
       {
+        name: 'Ahmed Hassan',
         nameEn: 'Ahmed Hassan',
         nameAr: 'أحمد حسن',
         titleEn: 'Backend Developer',
@@ -149,6 +162,7 @@ async function seed() {
           'https://yllaaa.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FmoustafaAdel.af36deb9.png&w=2048&q=75',
       },
       {
+        name: 'Yehya Abdelhamed',
         nameEn: 'Yehya Abdelhamed',
         nameAr: 'يحيى عبد الحميد',
         titleEn: 'SEO Specialist',
@@ -158,6 +172,7 @@ async function seed() {
           'https://yllaaa.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FyehiaAbdelhamed.464f2bb7.png&w=2048&q=75',
       },
       {
+        name: 'Lisa Chen',
         nameEn: 'Lisa Chen',
         nameAr: 'ليسا تشين',
         titleEn: 'UI/UX Designer & Creative Director',
@@ -167,6 +182,7 @@ async function seed() {
           'https://yllaaa.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FyehiaAbdelhamed.464f2bb7.png&w=2048&q=75',
       },
       {
+        name: 'Omar Khaled',
         nameEn: 'Omar Khaled',
         nameAr: 'عمر خالد',
         titleEn: 'Cybersecurity Consultant',
@@ -174,6 +190,7 @@ async function seed() {
         linkedIn: 'https://linkedin.com/in/omar-khaled-security',
       },
       {
+        name: 'Sarah Johnson',
         nameEn: 'Sarah Johnson',
         nameAr: 'سارة جونسون',
         titleEn: 'Data Scientist',
@@ -181,6 +198,7 @@ async function seed() {
         linkedIn: 'https://linkedin.com/in/sarah-johnson-data',
       },
       {
+        name: 'Mohamed Ali',
         nameEn: 'Mohamed Ali',
         nameAr: 'محمد علي',
         titleEn: 'Digital Marketing Specialist',
@@ -188,6 +206,7 @@ async function seed() {
         linkedIn: 'https://linkedin.com/in/mohamed-ali-marketing',
       },
       {
+        name: 'Yuki Tanaka',
         nameEn: 'Yuki Tanaka',
         nameAr: 'يوكي تاناكا',
         titleEn: 'Machine Learning Engineer',
@@ -655,6 +674,7 @@ async function seed() {
     .insert(courses)
     .values(
       courseData.map(({ trainers, categoryName, outcomes, ...course }) => ({
+        name: course.titleEn,
         titleEn: course.titleEn,
         titleAr: course.titleAr,
         descriptionEn: course.descriptionEn,

@@ -5,6 +5,7 @@ import { timestamps } from '../columns.helpers';
 
 export const countries = pgTable('countries', {
   id: serial('id').primaryKey(),
+  name: text('name').notNull(),
   nameAr: text('name_ar').notNull(),
   nameEn: text('name_en').notNull(),
   iso: text('iso').notNull(),

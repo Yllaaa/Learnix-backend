@@ -5,6 +5,7 @@ import { courses } from '../courses/courses';
 
 export const trainers = pgTable('trainers', {
   id: serial('id').primaryKey(),
+  name: text('name').notNull(),
   nameEn: text('name_en').notNull(),
   nameAr: text('name_ar').notNull(),
   titleEn: text('title_en').notNull(),
