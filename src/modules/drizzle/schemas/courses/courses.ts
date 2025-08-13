@@ -9,6 +9,7 @@ import { courseOutcomes } from './outcomes';
 
 export const courses = pgTable('courses', {
   id: serial('id').primaryKey(),
+  name: text('name').notNull(),
   titleEn: text('title_en').notNull(),
   titleAr: text('title_ar').notNull(),
   descriptionEn: text('description_en'),
