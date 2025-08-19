@@ -23,8 +23,12 @@ export const courses = pgTable('courses', {
 
 export const courseCategories = pgTable('course_categories', {
   id: serial('id').primaryKey(),
-  courseId: integer('course_id').references(() => courses.id),
-  categoryId: integer('category_id').references(() => categories.id),
+  courseId: integer('course_id').references(() => courses.id, {
+    onDelete: 'cascade',
+  }),
+  categoryId: integer('category_id').references(() => categories.id, {
+    onDelete: 'cascade',
+  }),
   ...timestamps,
 });
 

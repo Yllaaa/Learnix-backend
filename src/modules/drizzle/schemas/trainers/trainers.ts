@@ -22,8 +22,12 @@ export const trainersRelations = relations(trainers, ({ one, many }) => ({
 
 export const courseTrainers = pgTable('course_trainers', {
   id: serial('id').primaryKey(),
-  courseId: integer('course_id').references(() => courses.id),
-  trainerId: integer('trainer_id').references(() => trainers.id),
+  courseId: integer('course_id').references(() => courses.id, {
+    onDelete: 'cascade',
+  }),
+  trainerId: integer('trainer_id').references(() => trainers.id, {
+    onDelete: 'cascade',
+  }),
   ...timestamps,
 });
 

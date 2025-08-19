@@ -9,7 +9,9 @@ export const courseOutcomes = pgTable('course_outcomes', {
   titleAr: text('title_ar').notNull(),
   descriptionEn: text('description_en').notNull(),
   descriptionAr: text('description_ar').notNull(),
-  courseId: serial('course_id').references(() => courses.id),
+  courseId: serial('course_id').references(() => courses.id, {
+    onDelete: 'cascade',
+  }),
   ...timestamps,
 });
 
