@@ -16,14 +16,19 @@ export const courses = pgTable('courses', {
   descriptionAr: text('description_ar'),
   startDate: date('start_date'),
   price: integer('price'),
+  cityId: integer('city_id').references(() => cities.id),
   picture: text('picture'),
   ...timestamps,
 });
 
 export const courseCategories = pgTable('course_categories', {
   id: serial('id').primaryKey(),
-  courseId: integer('course_id').references(() => courses.id),
-  categoryId: integer('category_id').references(() => categories.id),
+  courseId: integer('course_id').references(() => courses.id, {
+    onDelete: 'cascade',
+  }),
+  categoryId: integer('category_id').references(() => categories.id, {
+    onDelete: 'cascade',
+  }),
   ...timestamps,
 });
 

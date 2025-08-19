@@ -13,15 +13,21 @@ export const courseRegisterationStatus = pgEnum('course_registeration_status', {
 });
 export const courseRegisteration = pgTable('course_registeration', {
   id: serial('id').primaryKey(),
-  courseId: serial('course_id').references(() => courses.id),
+  courseId: serial('course_id').references(() => courses.id, {
+    onDelete: 'set null',
+  }),
   fullName: text('full_name').notNull(),
   email: text('email').notNull(),
   jobTitle: text('job_title').notNull(),
   companyName: text('company_name').notNull(),
   startDate: text('start_date').notNull(),
   endDate: text('end_date').notNull(),
-  cityId: serial('city_id').references(() => cities.id),
-  trainerId: serial('trainer_id').references(() => trainers.id),
+  cityId: serial('city_id').references(() => cities.id, {
+    onDelete: 'set null',
+  }),
+  trainerId: serial('trainer_id').references(() => trainers.id, {
+    onDelete: 'set null',
+  }),
   status: courseRegisterationStatus('status').default('pending').notNull(),
 
   ...timestamps,
