@@ -16,7 +16,6 @@ export const courses = pgTable('courses', {
   descriptionAr: text('description_ar'),
   startDate: date('start_date'),
   price: integer('price'),
-  cityId: integer('city_id').references(() => cities.id),
   picture: text('picture'),
   ...timestamps,
 });
