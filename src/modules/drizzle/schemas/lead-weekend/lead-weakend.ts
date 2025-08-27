@@ -14,6 +14,7 @@ export const leadWeekendApplicants = pgTable('lead_weekend_applicants', {
   fullName: text('full_name').notNull(),
   email: text('email').notNull(),
   jobTitle: text('job_title').notNull(),
+  phoneNumber: text('phone_number').notNull(),
   companyName: text('company_name').notNull(),
   cityId: serial('city_id').references(() => cities.id),
   trainerId: serial('trainer_id').references(() => trainers.id),

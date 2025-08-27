@@ -14,6 +14,10 @@ export class CreateLeadWeekendApplicantDto {
 
   @IsString()
   @IsNotEmpty()
+  phoneNumber: string;
+
+  @IsString()
+  @IsNotEmpty()
   companyName: string;
 
   @IsInt()

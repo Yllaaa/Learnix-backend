@@ -19,6 +19,7 @@ export const courseRegisteration = pgTable('course_registeration', {
   fullName: text('full_name').notNull(),
   email: text('email').notNull(),
   jobTitle: text('job_title').notNull(),
+  phoneNumber: text('phone_number').notNull(),
   companyName: text('company_name').notNull(),
   startDate: text('start_date').notNull(),
   endDate: text('end_date').notNull(),
