@@ -14,6 +14,10 @@ export class RegisterCourseDto {
 
   @IsString()
   @IsNotEmpty()
+  phoneNumber: string;
+
+  @IsString()
+  @IsNotEmpty()
   startDate: string;
 
   @IsString()
